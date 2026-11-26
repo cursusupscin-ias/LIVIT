@@ -2565,19 +2565,22 @@
             // Ordinary browsers retain the existing Firebase popup flow.
             await signInWithPopup(auth, googleProvider);
           }
-        } catch (err) {
-          console.error('Google sign-in failed:', err);
-          if (isGoogleSignInCancelled(err)) {
-            showToast('Google sign-in was cancelled.');
-          } else if (err.code === 'auth/unauthorized-domain') {
-            showToast('This website domain is not yet authorised in Firebase.');
-          } else if (err.code === 'auth/popup-blocked') {
-            showToast('Your browser blocked the sign-in popup. Allow popups and try again.');
-          } else if (String(err?.message || '').includes('ID token')) {
-            showToast('Google sign-in could not complete. Check the Android OAuth configuration.');
-          } else {
-            showToast('Google sign-in failed. Check your connection and Android Google sign-in configuration, then try again.');
-          }
+       } catch (err) {
+  console.error('LIVIT GOOGLE SIGN-IN DIAGNOSTICS', {
+    code: err?.code,
+    message: err?.message,
+    error: err,
+    nativePlatform: isNativePlatform
+  });
+
+  const errorCode = err?.code || 'NO_ERROR_CODE';
+  const errorMessage = err?.message || String(err);
+
+  showToast(`Google sign-in failed [${errorCode}]: ${errorMessage}`);
+} finally {
+  googleSignInInProgress = false;
+  if (button) button.disabled = false;
+}
         } finally {
           googleSignInInProgress = false;
           if (button) button.disabled = false;
