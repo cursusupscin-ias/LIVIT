@@ -1,0 +1,3743 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LIVIT — Live the things you dream of</title>
+  <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <script>try{var t=localStorage.getItem("livit_theme")||"ink",m=localStorage.getItem("livit_mode")||"light";if(m==="auto")m=matchMedia("(prefers-color-scheme:dark)").matches?"dark":"light";var d=document.documentElement;d.setAttribute("data-theme",t);d.setAttribute("data-mode",m)}catch(e){}</script>
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS — MONOCHROME FOUNDATION + FROST × SUNRISE ACCENTS
+       ========================================================================== */
+    :root {
+      /* Light Theme (Warm editorial off-white, crisp white surfaces, deep ink) */
+      --bg-canvas: #F7F6F3;
+      --bg-sidebar: #F2F1ED;
+      --bg-surface: #FFFFFF;
+      --bg-surface-hover: #FCFBF9;
+      --bg-subtle: #EFEDE8;
+      --bg-glass: rgba(247, 246, 243, 0.85);
+      --bg-overlay: rgba(20, 21, 24, 0.42);
+
+      --border-hairline: #E5E4DF;
+      --border-strong: #D3D1C9;
+
+      --ink-primary: #141518;
+      --ink-secondary: #5E626A;
+      --ink-muted: #8A8E96;
+      --ink-inverse: #FFFFFF;
+
+      --btn-primary-bg: #141518;
+      --btn-primary-hover: #27292F;
+      --btn-primary-ink: #FFFFFF;
+
+      /* Restrained Frost & Sunrise Accents */
+      --frost-bg: #EAF1F8;
+      --frost-border: #D2E1F0;
+      --frost-ink: #356396;
+
+      --sunrise-bg: #F8EFE6;
+      --sunrise-border: #EDD8C4;
+      --sunrise-ink: #A85D24;
+
+      --silver-bg: #EFEFEF;
+      --silver-border: #E0E0E0;
+      --silver-ink: #4B4F56;
+
+      --danger-bg: #FDF0EF;
+      --danger-border: #F5D0CD;
+      --danger-ink: #B8332A;
+
+      --shadow-xs: 0 1px 2px rgba(20, 21, 24, 0.04);
+      --shadow-sm: 0 2px 8px rgba(20, 21, 24, 0.05), 0 1px 2px rgba(20, 21, 24, 0.03);
+      --shadow-md: 0 10px 28px rgba(20, 21, 24, 0.08), 0 2px 6px rgba(20, 21, 24, 0.04);
+      --shadow-lg: 0 22px 50px rgba(20, 21, 24, 0.14), 0 4px 12px rgba(20, 21, 24, 0.06);
+
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      --radius-xl: 22px;
+      --radius-pill: 9999px;
+
+      --sidebar-width: 248px;
+      --transition-fast: 160ms cubic-bezier(0.22, 1, 0.36, 1);
+      --transition-base: 240ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    [data-mode="dark"] {
+      /* Dark Theme (Near-black canvas, layered charcoal surfaces, controlled contrast) */
+      --bg-canvas: #0D0E11;
+      --bg-sidebar: #111317;
+      --bg-surface: #16181E;
+      --bg-surface-hover: #1C1F26;
+      --bg-subtle: #1F222A;
+      --bg-glass: rgba(17, 19, 23, 0.86);
+      --bg-overlay: rgba(0, 0, 0, 0.68);
+
+      --border-hairline: rgba(255, 255, 255, 0.08);
+      --border-strong: rgba(255, 255, 255, 0.15);
+
+      --ink-primary: #F3F4F6;
+      --ink-secondary: #989DA8;
+      --ink-muted: #686D78;
+      --ink-inverse: #111317;
+
+      --btn-primary-bg: #F3F4F6;
+      --btn-primary-hover: #FFFFFF;
+      --btn-primary-ink: #111317;
+
+      /* Restrained Dark Frost & Sunrise Accents */
+      --frost-bg: rgba(124, 179, 240, 0.11);
+      --frost-border: rgba(124, 179, 240, 0.22);
+      --frost-ink: #8BC0F8;
+
+      --sunrise-bg: rgba(224, 148, 88, 0.12);
+      --sunrise-border: rgba(224, 148, 88, 0.24);
+      --sunrise-ink: #E8A46D;
+
+      --silver-bg: rgba(255, 255, 255, 0.06);
+      --silver-border: rgba(255, 255, 255, 0.10);
+      --silver-ink: #B4B8C2;
+
+      --danger-bg: rgba(235, 87, 87, 0.12);
+      --danger-border: rgba(235, 87, 87, 0.25);
+      --danger-ink: #F27979;
+
+      --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.25);
+      --shadow-sm: 0 2px 10px rgba(0, 0, 0, 0.28);
+      --shadow-md: 0 12px 30px rgba(0, 0, 0, 0.42);
+      --shadow-lg: 0 24px 60px rgba(0, 0, 0, 0.6);
+    }
+
+    /* ==========================================================================
+       2. RESET & BASE TYPOGRAPHY
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background-color: var(--bg-canvas);
+      color: var(--ink-primary);
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      line-height: 1.5;
+      overflow-x: hidden;
+      transition: background-color var(--transition-base), color var(--transition-base);
+    }
+
+    button, input, textarea, select {
+      font-family: inherit;
+      font-size: inherit;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      border: none;
+      background: none;
+    }
+
+    button:focus-visible,
+    input:focus-visible,
+    textarea:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--frost-ink);
+      outline-offset: 2px;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* ==========================================================================
+       3. BRAND LOGO ADAPTIVE VISIBILITY
+       ========================================================================== */
+    .icon-for-light { display: block; }
+    .icon-for-dark { display: none; }
+
+    [data-theme="dark"] .icon-for-light { display: none; }
+    [data-theme="dark"] .icon-for-dark { display: block; }
+
+    /* ==========================================================================
+       4. ONBOARDING VIEW
+       ========================================================================== */
+    .onboarding-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+      background:
+        radial-gradient(circle at 20% 20%, var(--frost-bg) 0%, transparent 45%),
+        radial-gradient(circle at 82% 80%, var(--sunrise-bg) 0%, transparent 45%),
+        var(--bg-canvas);
+    }
+
+    .onboarding-card {
+      width: 100%;
+      max-width: 460px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-xl);
+      padding: 40px 36px;
+      box-shadow: var(--shadow-lg);
+      text-align: center;
+      animation: fadeSlideUp 420ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .onboarding-brand {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 28px;
+    }
+
+    .onboarding-app-icon {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+      box-shadow: var(--shadow-md);
+    }
+
+    .onboarding-wordmark {
+      height: 24px;
+      width: auto;
+    }
+
+    .onboarding-title {
+      font-size: 1.625rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.25;
+      margin-bottom: 12px;
+      color: var(--ink-primary);
+    }
+
+    .onboarding-subtitle {
+      font-size: 0.9375rem;
+      color: var(--ink-secondary);
+      line-height: 1.6;
+      margin-bottom: 28px;
+    }
+
+    .onboarding-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      text-align: left;
+    }
+
+    .onboarding-checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-md);
+      font-size: 0.8125rem;
+      color: var(--ink-secondary);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .onboarding-checkbox-row input[type="checkbox"] {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--ink-primary);
+      cursor: pointer;
+    }
+
+    /* ==========================================================================
+       5. APP SHELL LAYOUT (DESKTOP SIDEBAR + MOBILE TOP/BOTTOM NAV)
+       ========================================================================== */
+    .app-shell {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Desktop Left Sidebar (Day One editorial restraint) */
+    .sidebar {
+      width: var(--sidebar-width);
+      flex-shrink: 0;
+      background: var(--bg-sidebar);
+      border-right: 1px solid var(--border-hairline);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 24px 16px;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      z-index: 30;
+      transition: background-color var(--transition-base), border-color var(--transition-base);
+    }
+
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 4px 10px 24px 10px;
+      border-bottom: 1px solid var(--border-hairline);
+      margin-bottom: 20px;
+    }
+
+    .sidebar-icon {
+      width: 32px;
+      height: 32px;
+      flex-shrink: 0;
+      border-radius: 8px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .sidebar-wordmark {
+      height: 18px;
+      width: auto;
+    }
+
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      transition: background-color var(--transition-fast), color var(--transition-fast);
+    }
+
+    .nav-item:hover {
+      background: var(--bg-subtle);
+      color: var(--ink-primary);
+    }
+
+    .nav-item.active {
+      background: var(--bg-surface);
+      color: var(--ink-primary);
+      font-weight: 600;
+      box-shadow: var(--shadow-xs);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .nav-item-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-icon {
+      width: 18px;
+      height: 18px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      flex-shrink: 0;
+    }
+
+    .nav-badge {
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--ink-muted);
+      background: var(--bg-subtle);
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+      min-width: 24px;
+      text-align: center;
+    }
+
+    .nav-item.active .nav-badge {
+      background: var(--frost-bg);
+      color: var(--frost-ink);
+    }
+
+    .sidebar-footer {
+      border-top: 1px solid var(--border-hairline);
+      padding-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .theme-toggle-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: var(--radius-md);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      background: transparent;
+      border: 1px solid transparent;
+      transition: all var(--transition-fast);
+    }
+
+    .theme-toggle-btn:hover {
+      background: var(--bg-subtle);
+      color: var(--ink-primary);
+    }
+
+    /* Mobile Header & Bottom Bar */
+    .mobile-header {
+      display: none;
+      position: sticky;
+      top: 0;
+      z-index: 25;
+      background: var(--bg-glass);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border-hairline);
+      padding: 12px 16px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .mobile-brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      z-index: 30;
+      background: var(--bg-glass);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border-hairline);
+      padding: 6px 6px calc(6px + env(safe-area-inset-bottom));
+      grid-template-columns: repeat(5, 1fr);
+      gap: 2px;
+    }
+
+    .mobile-nav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      padding: 6px 2px;
+      border-radius: var(--radius-sm);
+      font-size: 0.6875rem;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      min-height: 48px;
+      transition: color var(--transition-fast), background-color var(--transition-fast);
+    }
+
+    .mobile-nav-item.active {
+      color: var(--ink-primary);
+      font-weight: 600;
+      background: var(--bg-subtle);
+    }
+
+    /* Main Content Area */
+    .main-wrapper {
+      flex: 1;
+      margin-left: var(--sidebar-width);
+      padding: 44px 40px 80px;
+      display: flex;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .main-container {
+      width: 100%;
+      max-width: 880px;
+    }
+
+    /* ==========================================================================
+       6. SECTION HEADERS, BUTTONS & INPUTS
+       ========================================================================== */
+    .section-header {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+    }
+
+    .greeting-eyebrow {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      margin-bottom: 4px;
+    }
+
+    .section-title {
+      font-size: 1.75rem;
+      font-weight: 600;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      color: var(--ink-primary);
+    }
+
+    .section-subtitle {
+      font-size: 0.9rem;
+      color: var(--ink-secondary);
+      margin-top: 6px;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1.2;
+      transition: all var(--transition-fast);
+      white-space: nowrap;
+      user-select: none;
+    }
+
+    .btn-primary {
+      background: var(--btn-primary-bg);
+      color: var(--btn-primary-ink);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .btn-primary:hover {
+      background: var(--btn-primary-hover);
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: var(--bg-surface);
+      color: var(--ink-primary);
+      border: 1px solid var(--border-hairline);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .btn-secondary:hover {
+      background: var(--bg-surface-hover);
+      border-color: var(--border-strong);
+    }
+
+    .btn-ghost {
+      color: var(--ink-secondary);
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-ghost:hover {
+      background: var(--bg-subtle);
+      color: var(--ink-primary);
+    }
+
+    .btn-danger {
+      background: var(--danger-bg);
+      color: var(--danger-ink);
+      border: 1px solid var(--danger-border);
+    }
+
+    .btn-danger:hover {
+      filter: brightness(0.96);
+    }
+
+    .btn-sm {
+      padding: 7px 12px;
+      font-size: 0.8125rem;
+      border-radius: var(--radius-sm);
+    }
+
+    .btn-icon {
+      width: 34px;
+      height: 34px;
+      padding: 0;
+      border-radius: var(--radius-sm);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-secondary);
+      transition: all var(--transition-fast);
+    }
+
+    .btn-icon:hover {
+      background: var(--bg-subtle);
+      color: var(--ink-primary);
+    }
+
+    /* Form Controls */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--ink-secondary);
+    }
+
+    .form-label span.req {
+      color: var(--sunrise-ink);
+      margin-left: 2px;
+    }
+
+    .input, .textarea, .select {
+      width: 100%;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      font-size: 0.9375rem;
+      color: var(--ink-primary);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .input::placeholder, .textarea::placeholder {
+      color: var(--ink-muted);
+    }
+
+    .input:hover, .textarea:hover, .select:hover {
+      border-color: var(--border-strong);
+    }
+
+    .input:focus, .textarea:focus, .select:focus {
+      outline: none;
+      border-color: var(--frost-ink);
+      box-shadow: 0 0 0 3px var(--frost-bg);
+    }
+
+    .textarea {
+      resize: vertical;
+      min-height: 84px;
+      line-height: 1.5;
+    }
+
+    .form-error {
+      font-size: 0.8rem;
+      color: var(--danger-ink);
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       7. QUICK-ADD BAR, SEARCH & CATEGORY FILTER PILLS
+       ========================================================================== */
+    .quick-add-bar {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 8px 10px 8px 16px;
+      margin-bottom: 20px;
+      box-shadow: var(--shadow-sm);
+      transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+    }
+
+    .quick-add-bar:focus-within {
+      border-color: var(--frost-ink);
+      box-shadow: 0 0 0 3px var(--frost-bg), var(--shadow-sm);
+    }
+
+    .quick-add-input {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-size: 0.9375rem;
+      color: var(--ink-primary);
+      min-width: 0;
+      padding: 6px 0;
+    }
+
+    .quick-add-input:focus {
+      outline: none;
+    }
+
+    .quick-add-input::placeholder {
+      color: var(--ink-muted);
+    }
+
+    .controls-toolbar {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      margin-bottom: 24px;
+    }
+
+    .search-box {
+      position: relative;
+      width: 100%;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 16px;
+      height: 16px;
+      stroke: var(--ink-muted);
+      fill: none;
+      stroke-width: 2;
+      pointer-events: none;
+    }
+
+    .search-input {
+      padding-left: 38px;
+      padding-right: 36px;
+      background: var(--bg-surface);
+      height: 40px;
+      font-size: 0.875rem;
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 22px;
+      height: 22px;
+      border-radius: var(--radius-pill);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--ink-muted);
+      font-size: 0.75rem;
+    }
+
+    .search-clear:hover {
+      background: var(--bg-subtle);
+      color: var(--ink-primary);
+    }
+
+    .filter-pills-scroll {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      scrollbar-width: none;
+    }
+
+    .filter-pills-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-pill {
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      white-space: nowrap;
+      transition: all var(--transition-fast);
+    }
+
+    .filter-pill:hover {
+      border-color: var(--border-strong);
+      color: var(--ink-primary);
+    }
+
+    .filter-pill.active {
+      background: var(--ink-primary);
+      color: var(--ink-inverse);
+      border-color: var(--ink-primary);
+    }
+
+    /* ==========================================================================
+       8. EXPERIENCE CARDS (MOMENTUM LAYERED POLISH + DAY ONE CLARITY)
+       ========================================================================== */
+    .experience-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .exp-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 20px 22px;
+      box-shadow: var(--shadow-xs);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      transition: transform var(--transition-fast), box-shadow var(--transition-fast), border-color var(--transition-fast), opacity 260ms ease;
+      position: relative;
+    }
+
+    .exp-card:hover {
+      transform: translateY(-1px);
+      box-shadow: var(--shadow-sm);
+      border-color: var(--border-strong);
+    }
+
+    .exp-card.completing {
+      transform: scale(0.985);
+      opacity: 0.35;
+      border-color: var(--sunrise-border);
+      background: var(--sunrise-bg);
+    }
+
+    .exp-card-body {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .exp-meta-top {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+
+    .category-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 3px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 0.01em;
+    }
+
+    .badge-frost {
+      background: var(--frost-bg);
+      color: var(--frost-ink);
+      border: 1px solid var(--frost-border);
+    }
+
+    .badge-sunrise {
+      background: var(--sunrise-bg);
+      color: var(--sunrise-ink);
+      border: 1px solid var(--sunrise-border);
+    }
+
+    .badge-silver {
+      background: var(--silver-bg);
+      color: var(--silver-ink);
+      border: 1px solid var(--silver-border);
+    }
+
+    .exp-location {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.78rem;
+      color: var(--ink-secondary);
+    }
+
+    .exp-location svg {
+      width: 13px;
+      height: 13px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .exp-date-meta {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .exp-title {
+      font-size: 1.0625rem;
+      font-weight: 600;
+      color: var(--ink-primary);
+      line-height: 1.38;
+      margin-bottom: 4px;
+      word-break: break-word;
+    }
+
+    .exp-card.is-dropped .exp-title {
+      color: var(--ink-secondary);
+    }
+
+    .exp-description {
+      font-size: 0.8875rem;
+      color: var(--ink-secondary);
+      line-height: 1.55;
+      margin-top: 4px;
+      word-break: break-word;
+    }
+
+    .exp-notes-preview {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--bg-subtle);
+      border-radius: var(--radius-sm);
+      font-size: 0.8125rem;
+      color: var(--ink-secondary);
+      border-left: 2px solid var(--border-strong);
+      word-break: break-word;
+    }
+
+    .exp-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-shrink: 0;
+    }
+
+    .btn-complete {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 13px;
+      border-radius: var(--radius-md);
+      font-size: 0.8125rem;
+      font-weight: 500;
+      background: var(--bg-subtle);
+      color: var(--ink-primary);
+      border: 1px solid var(--border-hairline);
+      transition: all var(--transition-fast);
+    }
+
+    .btn-complete:hover {
+      background: var(--sunrise-bg);
+      color: var(--sunrise-ink);
+      border-color: var(--sunrise-border);
+    }
+
+    .btn-complete svg {
+      width: 15px;
+      height: 15px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+    }
+
+    /* Dropdown Menu */
+    .dropdown-wrap {
+      position: relative;
+    }
+
+    .dropdown-menu {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      min-width: 182px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-md);
+      padding: 6px;
+      z-index: 40;
+      animation: fadeSlideUp 150ms cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8375rem;
+      font-weight: 500;
+      color: var(--ink-primary);
+      text-align: left;
+      transition: background-color var(--transition-fast);
+    }
+
+    .dropdown-item:hover {
+      background: var(--bg-subtle);
+    }
+
+    .dropdown-item.danger {
+      color: var(--danger-ink);
+    }
+
+    .dropdown-item.danger:hover {
+      background: var(--danger-bg);
+    }
+
+    /* ==========================================================================
+       9. EMPTY STATES
+       ========================================================================== */
+    .empty-state {
+      background: var(--bg-surface);
+      border: 1px dashed var(--border-strong);
+      border-radius: var(--radius-xl);
+      padding: 56px 24px;
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .empty-state-icon {
+      width: 52px;
+      height: 52px;
+      margin-bottom: 18px;
+      border-radius: 14px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .empty-state-title {
+      font-size: 1.15rem;
+      font-weight: 600;
+      color: var(--ink-primary);
+      margin-bottom: 6px;
+      letter-spacing: -0.015em;
+    }
+
+    .empty-state-text {
+      font-size: 0.9rem;
+      color: var(--ink-secondary);
+      max-width: 360px;
+      margin-bottom: 22px;
+      line-height: 1.55;
+    }
+
+    /* ==========================================================================
+       10. CATEGORIES SECTION
+       ========================================================================== */
+    .category-create-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 24px;
+    }
+
+    .categories-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 14px;
+    }
+
+    .category-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      box-shadow: var(--shadow-xs);
+      transition: all var(--transition-fast);
+    }
+
+    .category-card:hover {
+      border-color: var(--border-strong);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .category-card-main {
+      flex: 1;
+      min-width: 0;
+      cursor: pointer;
+    }
+
+    .category-card-name {
+      font-size: 0.9625rem;
+      font-weight: 600;
+      color: var(--ink-primary);
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .category-card-count {
+      font-size: 0.8125rem;
+      color: var(--ink-secondary);
+    }
+
+    .category-card-actions {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* ==========================================================================
+       11. SETTINGS SECTION
+       ========================================================================== */
+    .settings-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .settings-card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-xs);
+    }
+
+    .settings-card-header {
+      margin-bottom: 16px;
+    }
+
+    .settings-card-title {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink-primary);
+      margin-bottom: 4px;
+    }
+
+    .settings-card-desc {
+      font-size: 0.85rem;
+      color: var(--ink-secondary);
+    }
+
+    .settings-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .theme-segmented {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-hairline);
+    }
+
+    .theme-seg-btn {
+      padding: 7px 16px;
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      transition: all var(--transition-fast);
+    }
+
+    .theme-seg-btn.active {
+      background: var(--bg-surface);
+      color: var(--ink-primary);
+      box-shadow: var(--shadow-xs);
+    }
+
+    .brand-about-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-about-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    /* ==========================================================================
+       12. MODALS & TOAST NOTIFICATIONS
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: var(--bg-overlay);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+      animation: fadeIn 160ms ease;
+    }
+
+    .modal-dialog {
+      width: 100%;
+      max-width: 500px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-hairline);
+      border-radius: var(--radius-xl);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      animation: fadeSlideUp 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      max-height: 92vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .modal-dialog.modal-sm {
+      max-width: 410px;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 20px 24px 16px;
+      border-bottom: 1px solid var(--border-hairline);
+    }
+
+    .modal-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--ink-primary);
+      letter-spacing: -0.015em;
+    }
+
+    .modal-body {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      overflow-y: auto;
+    }
+
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 16px 24px 20px;
+      border-top: 1px solid var(--border-hairline);
+      background: var(--bg-subtle);
+    }
+
+    .modal-footer-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-left: auto;
+    }
+
+    /* Toast Container */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 120;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .toast {
+      pointer-events: auto;
+      background: var(--ink-primary);
+      color: var(--ink-inverse);
+      padding: 12px 16px;
+      border-radius: var(--radius-md);
+      font-size: 0.875rem;
+      font-weight: 500;
+      box-shadow: var(--shadow-md);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      animation: fadeSlideUp 220ms cubic-bezier(0.22, 1, 0.36, 1);
+      max-width: 360px;
+    }
+
+    .toast-undo-btn {
+      color: var(--sunrise-ink);
+      background: var(--bg-surface);
+      padding: 4px 10px;
+      border-radius: var(--radius-sm);
+      font-size: 0.78rem;
+      font-weight: 600;
+    }
+
+    @keyframes fadeSlideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    /* ==========================================================================
+       13. RESPONSIVE BREAKPOINTS
+       ========================================================================== */
+    @media (max-width: 767px) {
+      .sidebar {
+        display: none;
+      }
+
+      .mobile-header {
+        display: flex;
+      }
+
+      .mobile-nav {
+        display: grid;
+      }
+
+      .main-wrapper {
+        margin-left: 0;
+        padding: 24px 16px 96px;
+      }
+
+      .section-title {
+        font-size: 1.5rem;
+      }
+
+      .exp-card {
+        flex-direction: column;
+        padding: 16px 18px;
+        gap: 14px;
+      }
+
+      .exp-card-actions {
+        width: 100%;
+        justify-content: flex-end;
+        padding-top: 10px;
+        border-top: 1px solid var(--border-hairline);
+      }
+
+      .toast-container {
+        bottom: 76px;
+        left: 16px;
+        right: 16px;
+        align-items: center;
+      }
+
+      .toast {
+        width: 100%;
+        max-width: none;
+        justify-content: space-between;
+      }
+
+      .onboarding-card {
+        padding: 32px 22px;
+      }
+    }
+
+    /* ===== V1.1 ADDITIONS: themes, checkbox, celebration, smoothness ===== */
+    [data-mode="dark"] .icon-for-light { display: none; }
+    [data-mode="dark"] .icon-for-dark { display: block; }
+    [data-theme="midnight"] { --bg-canvas:#0A0F1E; --bg-sidebar:#0D1426; --bg-surface:#121A31; --bg-surface-hover:#172140; --bg-subtle:#1A2444; --bg-glass:rgba(10,15,30,.86); --border-hairline:rgba(140,170,255,.12); --border-strong:rgba(140,170,255,.24); --ink-primary:#EAF0FF; --ink-secondary:#9AA7C7; --ink-muted:#6B7799; --ink-inverse:#0A0F1E; --btn-primary-bg:#EAF0FF; --btn-primary-hover:#FFFFFF; --btn-primary-ink:#0A0F1E; }
+    [data-theme="forest"] { --bg-canvas:#0B120E; --bg-sidebar:#0E1712; --bg-surface:#131E17; --bg-surface-hover:#19271F; --bg-subtle:#1D2B22; --bg-glass:rgba(11,18,14,.86); --border-hairline:rgba(150,220,170,.11); --border-strong:rgba(150,220,170,.22); --ink-primary:#EAF5EC; --ink-secondary:#9BB3A1; --ink-muted:#6B8272; --ink-inverse:#0B120E; --btn-primary-bg:#D8F3DC; --btn-primary-hover:#FFFFFF; --btn-primary-ink:#0B120E; }
+    [data-theme="ocean"] { --bg-canvas:#F0F6FA; --bg-sidebar:#E8F0F6; --bg-surface:#FFFFFF; --bg-surface-hover:#F7FBFD; --bg-subtle:#E3EDF4; --bg-glass:rgba(240,246,250,.85); --border-hairline:#D8E4EC; --border-strong:#C3D3DE; --ink-primary:#0F1E2B; --ink-secondary:#546677; --ink-muted:#8296A6; --btn-primary-bg:#0F3B5C; --btn-primary-hover:#14507C; --btn-primary-ink:#FFFFFF; }
+    [data-theme="rose"] { --bg-canvas:#FBF4F4; --bg-sidebar:#F6ECEC; --bg-surface:#FFFFFF; --bg-surface-hover:#FFFAFA; --bg-subtle:#F3E6E6; --bg-glass:rgba(251,244,244,.85); --border-hairline:#EEDCDC; --border-strong:#E0C5C5; --ink-primary:#2A1618; --ink-secondary:#745559; --ink-muted:#9C8083; --btn-primary-bg:#7A1F3D; --btn-primary-hover:#962A4D; --btn-primary-ink:#FFFFFF; }
+    html { scroll-behavior: smooth; }
+    html.theming *, html.theming *::before, html.theming *::after { transition: background-color .4s ease, color .4s ease, border-color .4s ease, box-shadow .4s ease !important; }
+    .btn:active, .btn-complete:active, .filter-pill:active { transform: scale(.97); }
+    @keyframes cardIn { from { opacity: 0; transform: translateY(12px); } }
+    .experience-list.animate .exp-card { animation: cardIn .5s cubic-bezier(.22,1,.36,1) both; }
+    .experience-list.animate .exp-card:nth-child(2){animation-delay:45ms}
+    .experience-list.animate .exp-card:nth-child(3){animation-delay:90ms}
+    .experience-list.animate .exp-card:nth-child(4){animation-delay:135ms}
+    .experience-list.animate .exp-card:nth-child(5){animation-delay:180ms}
+    .experience-list.animate .exp-card:nth-child(6){animation-delay:225ms}
+    .experience-list.animate .exp-card:nth-child(7){animation-delay:270ms}
+    .experience-list.animate .exp-card:nth-child(8){animation-delay:315ms}
+    .exp-check { --check-color: #0EA5E9; flex: none; width: 28px; height: 28px; margin-top: 2px; border-radius: 9px; border: 2px solid color-mix(in srgb, var(--check-color) 58%, transparent); background: color-mix(in srgb, var(--check-color) 10%, var(--bg-surface)); display: grid; place-items: center; transition: all var(--transition-fast); box-shadow: 0 2px 7px color-mix(in srgb, var(--check-color) 12%, transparent); }
+    .exp-check:hover { border-color: var(--check-color); background: color-mix(in srgb, var(--check-color) 18%, var(--bg-surface)); transform: scale(1.08); }
+    .exp-check svg { width: 16px; height: 16px; stroke: #fff; stroke-width: 3.4; fill: none; stroke-linecap: round; stroke-linejoin: round; stroke-dasharray: 24; stroke-dashoffset: 24; transition: stroke-dashoffset .35s .08s; }
+    .exp-check.on, .exp-card.completing .exp-check { background: var(--check-color); border-color: var(--check-color); box-shadow: 0 3px 12px color-mix(in srgb, var(--check-color) 34%, transparent); }
+    .exp-check.on svg, .exp-card.completing .exp-check svg { stroke-dashoffset: 0; }
+    .exp-card.completing .exp-check { animation: chkPop .45s; }
+    @keyframes chkPop { 40% { transform: scale(1.3); } }
+    .exp-card.completing { opacity: 1; transform: scale(1.01); animation: cardGlow 1s ease-out; }
+    @keyframes cardGlow { 0% { box-shadow: 0 0 0 0 var(--sunrise-ink); } 40% { box-shadow: 0 0 0 6px color-mix(in srgb, var(--sunrise-ink) 28%, transparent), 0 0 34px color-mix(in srgb, var(--sunrise-ink) 45%, transparent); } 100% { box-shadow: none; } }
+    .category-color-control { display:flex; align-items:center; gap:12px; color:var(--ink-secondary); font-size:.82rem; }
+    .category-color-control input[type="color"] { width:48px; height:38px; padding:3px; border:1px solid var(--border-strong); border-radius:10px; background:var(--bg-surface); cursor:pointer; }
+    .fx-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 9999; }
+    .fx-finale { position: fixed; inset: 0; z-index: 9998; display: grid; place-items: center; text-align: center; padding: 24px; background: rgba(8,9,12,.8); backdrop-filter: blur(10px); opacity: 0; pointer-events: none; transition: opacity .4s; }
+    .fx-finale.show { opacity: 1; pointer-events: auto; }
+    .fx-finale h2 { font-size: clamp(34px, 8vw, 72px); font-weight: 700; letter-spacing: -.03em; color: #fff; transform: scale(.8); opacity: 0; transition: all .6s cubic-bezier(.22,1.4,.36,1); }
+    .fx-finale.show h2 { transform: none; opacity: 1; }
+    .fx-finale p { color: #c9ccd3; margin-top: 12px; }
+    .theme-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(112px, 1fr)); gap: 10px; }
+    .theme-swatch { display: flex; flex-direction: column; gap: 8px; align-items: flex-start; padding: 10px; border-radius: var(--radius-md); border: 1px solid var(--border-hairline); background: var(--bg-surface); font-size: .8rem; font-weight: 500; color: var(--ink-secondary); transition: all var(--transition-fast); }
+    .theme-swatch:hover { transform: translateY(-2px); border-color: var(--border-strong); }
+    .theme-swatch.active { border-color: var(--ink-primary); color: var(--ink-primary); box-shadow: var(--shadow-sm); }
+    .theme-swatch .sw { display: flex; width: 100%; height: 34px; border-radius: 8px; padding: 6px; gap: 4px; align-items: flex-end; border: 1px solid rgba(128,128,128,.25); }
+    .theme-swatch .sw i { flex: 1; height: 100%; border-radius: 4px; }
+  
+    #livit-cloud-status[data-state="synced"] { color: #16a34a !important; }
+    #livit-cloud-status[data-state="saving"],
+    #livit-cloud-status[data-state="connecting"] { color: var(--accent, var(--ink-secondary)) !important; }
+    #livit-cloud-status[data-state="error"] { color: #dc2626 !important; }
+    .livit-account-line { display:flex; flex-direction:column; gap:2px; }
+    .livit-account-line span { font-size:.82rem; color:var(--ink-secondary); }
+
+  </style>
+</head>
+<body>
+  <!-- ========================================================================
+       REUSABLE EXACT SVG BRAND DEFINITIONS (LIVIT WORDMARK + DARK/LIGHT ICONS)
+       ======================================================================== -->
+  <svg width="0" height="0" style="position:absolute;visibility:hidden;" aria-hidden="true">
+    <defs>
+      <!-- LIVIT Exact Wordmark: Geometric L I V(with nested summit chevron) I T -->
+      <symbol id="livit-wordmark" viewBox="0 0 264 56">
+        <!-- L -->
+        <path d="M8 6 H19 V40 H44 V50 H8 Z" fill="currentColor" />
+        <!-- I -->
+        <path d="M58 6 H69 V50 H58 Z" fill="currentColor" />
+        <!-- V outer -->
+        <path d="M84 6 H96.5 L118 40.5 L139.5 6 H152 L123.5 50 H112.5 Z" fill="currentColor" />
+        <!-- V nested inverted-V / summit chevron (apex aligned with top cap-height y=6) -->
+        <path d="M118 6 L131 26.5 L123.5 31.2 L118 22.2 L112.5 31.2 L105 26.5 Z" fill="currentColor" />
+        <!-- I -->
+        <path d="M167 6 H178 V50 H167 Z" fill="currentColor" />
+        <!-- T -->
+        <path d="M193 6 H256 V16 H230 V50 H219 V16 H193 Z" fill="currentColor" />
+      </symbol>
+
+      <!-- LIVIT Dark App Icon: Deep charcoal squircle with white broken circle, 3 peaks & summit flag -->
+      <symbol id="livit-icon-dark" viewBox="0 0 120 120">
+        <rect x="2" y="2" width="116" height="116" rx="28" fill="#121316" />
+        <!-- Broken circle arc (open at top for flag & right pennant) -->
+        <path d="M 55.5 23.3 A 37 37 0 1 0 77.5 27.5" fill="none" stroke="#FFFFFF" stroke-width="6.2" stroke-linecap="butt" />
+        <!-- Three-peaked mountain range rising cleanly from lower-left and lower-right circle arcs -->
+        <path d="M 28.5 79 L 42 57 L 48.5 65.5 L 60 44.5 L 71.5 65.5 L 78 57 L 91.5 79" fill="none" stroke="#FFFFFF" stroke-width="6.2" stroke-linecap="butt" stroke-linejoin="miter" />
+        <!-- Vertical flagpole & triangular summit flag at central apex -->
+        <path d="M 60 46 V 20 L 82 28.5 L 60 36.5" fill="#FFFFFF" />
+        <rect x="57.2" y="20" width="5.6" height="27" fill="#FFFFFF" />
+      </symbol>
+
+      <!-- LIVIT Light App Icon: Crisp white squircle with dark #141518 broken circle, 3 peaks & summit flag -->
+      <symbol id="livit-icon-light" viewBox="0 0 120 120">
+        <rect x="2" y="2" width="116" height="116" rx="28" fill="#FFFFFF" stroke="#E5E4DF" stroke-width="2" />
+        <!-- Broken circle arc -->
+        <path d="M 55.5 23.3 A 37 37 0 1 0 77.5 27.5" fill="none" stroke="#141518" stroke-width="6.2" stroke-linecap="butt" />
+        <!-- Three-peaked mountain range -->
+        <path d="M 28.5 79 L 42 57 L 48.5 65.5 L 60 44.5 L 71.5 65.5 L 78 57 L 91.5 79" fill="none" stroke="#141518" stroke-width="6.2" stroke-linecap="butt" stroke-linejoin="miter" />
+        <!-- Vertical flagpole & triangular summit flag -->
+        <path d="M 60 46 V 20 L 82 28.5 L 60 36.5" fill="#141518" />
+        <rect x="57.2" y="20" width="5.6" height="27" fill="#141518" />
+      </symbol>
+    </defs>
+  </svg>
+
+  <!-- ========================================================================
+       1. FIRST-TIME ONBOARDING SCREEN
+       ======================================================================== -->
+  <section id="onboarding-view" class="onboarding-screen hidden" aria-label="Welcome to LIVIT">
+    <div class="onboarding-card">
+      <div class="onboarding-brand">
+        <svg class="onboarding-app-icon icon-for-light" aria-hidden="true"><use href="#livit-icon-light" /></svg>
+        <svg class="onboarding-app-icon icon-for-dark" aria-hidden="true"><use href="#livit-icon-dark" /></svg>
+        <svg class="onboarding-wordmark" role="img" aria-label="LIVIT"><use href="#livit-wordmark" /></svg>
+      </div>
+
+      <h1 class="onboarding-title">Live the things you dream of.</h1>
+      <p class="onboarding-subtitle">
+        Save the experiences you want to have, enjoy them at your own pace, and keep track of the things you've done.
+      </p>
+
+      <form id="onboarding-form" class="onboarding-form" novalidate>
+        <div class="form-group">
+          <label for="onboarding-name-input" class="form-label">What should we call you?</label>
+          <input
+            id="onboarding-name-input"
+            type="text"
+            class="input"
+            placeholder="Your first name"
+            maxlength="40"
+            autocomplete="given-name"
+            required
+          />
+          <div id="onboarding-error" class="form-error hidden"></div>
+        </div>
+
+        <label class="onboarding-checkbox-row">
+          <input id="onboarding-seed-checkbox" type="checkbox" />
+          <span>Start with a few inspiring example experiences</span>
+        </label>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 12px 18px; margin-top: 4px;">
+          Begin
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- ========================================================================
+       2. MAIN APPLICATION SHELL
+       ======================================================================== -->
+  <div id="app-shell" class="app-shell hidden">
+    <!-- Desktop Sidebar -->
+    <aside class="sidebar" aria-label="Primary Navigation">
+      <div>
+        <div class="sidebar-brand">
+          <svg class="sidebar-icon icon-for-light" aria-hidden="true"><use href="#livit-icon-light" /></svg>
+          <svg class="sidebar-icon icon-for-dark" aria-hidden="true"><use href="#livit-icon-dark" /></svg>
+          <svg class="sidebar-wordmark" role="img" aria-label="LIVIT"><use href="#livit-wordmark" /></svg>
+        </div>
+
+        <nav class="sidebar-nav" role="navigation">
+          <button type="button" class="nav-item active" data-nav="want">
+            <span class="nav-item-left">
+              <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+              <span>Want to Do</span>
+            </span>
+            <span class="nav-badge" id="nav-count-want">0</span>
+          </button>
+
+          <button type="button" class="nav-item" data-nav="completed">
+            <span class="nav-item-left">
+              <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+              <span>Completed</span>
+            </span>
+            <span class="nav-badge" id="nav-count-completed">0</span>
+          </button>
+
+          <button type="button" class="nav-item" data-nav="dropped">
+            <span class="nav-item-left">
+              <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+              <span>Dropped</span>
+            </span>
+            <span class="nav-badge" id="nav-count-dropped">0</span>
+          </button>
+
+          <button type="button" class="nav-item" data-nav="categories">
+            <span class="nav-item-left">
+              <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+              <span>Categories</span>
+            </span>
+            <span class="nav-badge" id="nav-count-categories">6</span>
+          </button>
+
+          <button type="button" class="nav-item" data-nav="settings">
+            <span class="nav-item-left">
+              <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+              <span>Settings</span>
+            </span>
+          </button>
+        </nav>
+      </div>
+
+      <div class="sidebar-footer">
+        <button type="button" id="sidebar-theme-btn" class="theme-toggle-btn" aria-label="Toggle color theme">
+          <span style="display:flex;align-items:center;gap:10px;">
+            <svg class="nav-icon" id="sidebar-theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+            <span id="sidebar-theme-label">Dark Mode</span>
+          </span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content Column -->
+    <div style="flex:1; display:flex; flex-direction:column; min-width:0;">
+      <!-- Mobile Header -->
+      <header class="mobile-header">
+        <div class="mobile-brand">
+          <svg style="width:28px;height:28px;border-radius:7px;" class="icon-for-light" aria-hidden="true"><use href="#livit-icon-light" /></svg>
+          <svg style="width:28px;height:28px;border-radius:7px;" class="icon-for-dark" aria-hidden="true"><use href="#livit-icon-dark" /></svg>
+          <svg style="height:16px;width:auto;" role="img" aria-label="LIVIT"><use href="#livit-wordmark" /></svg>
+        </div>
+        <button type="button" id="mobile-theme-btn" class="btn-icon" aria-label="Toggle color theme">
+          <svg class="nav-icon" id="mobile-theme-icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </header>
+
+      <!-- Dynamic Section Canvas -->
+      <main class="main-wrapper">
+        <div id="main-content" class="main-container"></div>
+      </main>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-nav" aria-label="Mobile Navigation">
+      <button type="button" class="mobile-nav-item active" data-nav="want">
+        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
+        <span>Want to Do</span>
+      </button>
+      <button type="button" class="mobile-nav-item" data-nav="completed">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        <span>Completed</span>
+      </button>
+      <button type="button" class="mobile-nav-item" data-nav="dropped">
+        <svg class="nav-icon" viewBox="0 0 24 24"><polyline points="21 8 21 21 3 21 3 8"/><rect x="1" y="3" width="22" height="5"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+        <span>Dropped</span>
+      </button>
+      <button type="button" class="mobile-nav-item" data-nav="categories">
+        <svg class="nav-icon" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+        <span>Categories</span>
+      </button>
+      <button type="button" class="mobile-nav-item" data-nav="settings">
+        <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        <span>Settings</span>
+      </button>
+    </nav>
+  </div>
+
+  <!-- ========================================================================
+       3. ADD / EDIT EXPERIENCE MODAL
+       ======================================================================== -->
+  <div id="experience-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="exp-modal-title">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h2 id="exp-modal-title" class="modal-title">Add Experience</h2>
+        <button type="button" class="btn-icon" id="exp-modal-close" aria-label="Close modal">
+          <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+
+      <form id="experience-form" novalidate style="display:flex;flex-direction:column;overflow:hidden;">
+        <div class="modal-body">
+          <input type="hidden" id="exp-id" />
+
+          <div class="form-group">
+            <label for="exp-title-input" class="form-label">Experience Title <span class="req">*</span></label>
+            <input
+              id="exp-title-input"
+              type="text"
+              class="input"
+              placeholder="e.g., Watch the Northern Lights in Tromsø"
+              maxlength="140"
+              required
+            />
+            <div id="exp-title-error" class="form-error hidden">Please enter a title for this experience.</div>
+          </div>
+
+          <div class="form-group">
+            <label for="exp-desc-input" class="form-label">Description</label>
+            <textarea
+              id="exp-desc-input"
+              class="textarea"
+              placeholder="What makes this experience meaningful to you?"
+              maxlength="600"
+            ></textarea>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px;">
+            <div class="form-group">
+              <label for="exp-category-select" class="form-label">Category</label>
+              <select id="exp-category-select" class="select"></select>
+            </div>
+
+            <div class="form-group">
+              <label for="exp-location-input" class="form-label">Location</label>
+              <input
+                id="exp-location-input"
+                type="text"
+                class="input"
+                placeholder="e.g., Kyoto, Japan"
+                maxlength="100"
+              />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="exp-notes-input" class="form-label">Personal Notes</label>
+            <textarea
+              id="exp-notes-input"
+              class="textarea"
+              style="min-height: 70px;"
+              placeholder="Ideas, companions, or reflections..."
+              maxlength="800"
+            ></textarea>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" id="exp-delete-btn" class="btn btn-danger btn-sm hidden">Delete</button>
+          <div class="modal-footer-right">
+            <button type="button" id="exp-cancel-btn" class="btn btn-secondary">Cancel</button>
+            <button type="submit" id="exp-save-btn" class="btn btn-primary">Save Experience</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       4. CONFIRMATION DIALOG MODAL
+       ======================================================================== -->
+  <div id="confirm-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <h2 id="confirm-title" class="modal-title">Confirm Action</h2>
+        <button type="button" class="btn-icon" id="confirm-close-btn" aria-label="Close confirmation">
+          <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p id="confirm-message" style="font-size:0.9375rem; color:var(--ink-secondary); line-height:1.55;"></p>
+        <div id="confirm-type-wrap" class="form-group hidden">
+          <label for="confirm-type-input" class="form-label">Type <strong>DELETE</strong> to confirm</label>
+          <input id="confirm-type-input" type="text" class="input" placeholder="DELETE" autocomplete="off" />
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="modal-footer-right">
+          <button type="button" id="confirm-cancel-btn" class="btn btn-secondary">Cancel</button>
+          <button type="button" id="confirm-accept-btn" class="btn btn-danger">Confirm</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       5. RENAME CATEGORY MODAL
+       ======================================================================== -->
+  <div id="rename-cat-modal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="rename-cat-title">
+    <div class="modal-dialog modal-sm">
+      <div class="modal-header">
+        <h2 id="rename-cat-title" class="modal-title">Edit Category</h2>
+        <button type="button" class="btn-icon" id="rename-cat-close" aria-label="Close">
+          <svg class="nav-icon" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <form id="rename-cat-form" novalidate>
+        <div class="modal-body">
+          <input type="hidden" id="rename-cat-id" />
+          <div class="form-group">
+            <label for="rename-cat-input" class="form-label">Category Name</label>
+            <input id="rename-cat-input" type="text" class="input" maxlength="32" required />
+          </div>
+          <div class="form-group">
+            <label for="rename-cat-color" class="form-label">Category colour</label>
+            <div class="category-color-control"><input id="rename-cat-color" type="color" value="#8B5CF6" aria-label="Choose category colour" /><span>Used for its label and completion checkmarks</span></div>
+          </div>
+          <div class="form-group">
+            <div id="rename-cat-error" class="form-error hidden"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <div class="modal-footer-right">
+            <button type="button" id="rename-cat-cancel" class="btn btn-secondary">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Category</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Hidden File Input for JSON Import -->
+  <input type="file" id="json-import-input" accept=".json,application/json" class="hidden" />
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container" aria-live="polite"></div>
+
+  <!-- ========================================================================
+       6. APPLICATION JAVASCRIPT — CLEAN ARCHITECTURE & PERSISTENT STORE
+       ======================================================================== -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import {
+      getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword,
+      signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import {
+      getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+
+    (function () {
+      'use strict';
+
+      /* ----------------------------------------------------------------------
+         CONSTANTS & DEFAULT DATA
+         ---------------------------------------------------------------------- */
+      const STORAGE_KEYS = {
+        DATA: 'livit_app_data_v1',
+        THEME: 'livit_theme'
+      };
+
+      const BUILT_IN_CATEGORIES = [
+        { id: 'cat_travel', name: 'Travel', tone: 'frost', builtIn: true },
+        { id: 'cat_adventure', name: 'Adventure', tone: 'sunrise', builtIn: true },
+        { id: 'cat_food', name: 'Food', tone: 'sunrise', builtIn: true },
+        { id: 'cat_skills', name: 'Skills', tone: 'frost', builtIn: true },
+        { id: 'cat_experiences', name: 'Experiences', tone: 'silver', builtIn: true },
+        { id: 'cat_personal', name: 'Personal', tone: 'silver', builtIn: true }
+      ];
+
+      const SEED_EXPERIENCES = [
+        {
+          id: 'exp_seed_1',
+          title: 'Watch the Northern Lights from a glass cabin',
+          description: 'Spend a quiet winter night beneath the aurora borealis far from city lights.',
+          categoryId: 'cat_travel',
+          location: 'Tromsø, Norway',
+          notes: 'Best window is late autumn through early spring.',
+          status: 'want',
+          createdAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+          completedAt: null
+        },
+        {
+          id: 'exp_seed_2',
+          title: 'Learn to make handmade ramen noodles from scratch',
+          description: 'Master alkaline dough hydration, broth depth, and tare balance.',
+          categoryId: 'cat_food',
+          location: 'Home Kitchen',
+          notes: '',
+          status: 'want',
+          createdAt: new Date(Date.now() - 86400000 * 3).toISOString(),
+          completedAt: null
+        },
+        {
+          id: 'exp_seed_3',
+          title: 'Hike the Milford Track at sunrise',
+          description: 'Walk through temperate rainforests, suspension bridges, and alpine passes.',
+          categoryId: 'cat_adventure',
+          location: 'Fiordland, New Zealand',
+          notes: 'Book huts well ahead of season.',
+          status: 'want',
+          createdAt: new Date(Date.now() - 86400000 * 2).toISOString(),
+          completedAt: null
+        }
+      ];
+
+      /* ----------------------------------------------------------------------
+         MODULAR PERSISTENCE STORE (Adapter-ready for future Firebase sync)
+         ---------------------------------------------------------------------- */
+      class LivitStore {
+        constructor() {
+          this.state = this.load();
+          this.listeners = new Set();
+        }
+
+        getDefaultState() {
+          return {
+            version: 1,
+            profile: null, // { name: string, createdAt: string }
+            categories: JSON.parse(JSON.stringify(BUILT_IN_CATEGORIES)),
+            experiences: []
+          };
+        }
+
+        load() {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEYS.DATA);
+            if (!raw) return this.getDefaultState();
+            const parsed = JSON.parse(raw);
+            return this.validateAndNormalize(parsed);
+          } catch (err) {
+            console.error('Failed to read LIVIT state from localStorage:', err);
+            return this.getDefaultState();
+          }
+        }
+
+        validateAndNormalize(data) {
+          if (!data || typeof data !== 'object') {
+            throw new Error('Invalid data format.');
+          }
+
+          const normalized = this.getDefaultState();
+
+          // Profile validation
+          if (data.profile && typeof data.profile === 'object' && typeof data.profile.name === 'string' && data.profile.name.trim()) {
+            normalized.profile = {
+              name: data.profile.name.trim().slice(0, 40),
+              createdAt: typeof data.profile.createdAt === 'string' ? data.profile.createdAt : new Date().toISOString()
+            };
+          }
+
+          // Categories validation
+          if (Array.isArray(data.categories)) {
+            const seenIds = new Set();
+            const validCats = [];
+            for (const c of data.categories) {
+              if (c && typeof c.id === 'string' && typeof c.name === 'string' && c.name.trim() && !seenIds.has(c.id)) {
+                seenIds.add(c.id);
+                validCats.push({
+                  id: c.id,
+                  name: c.name.trim().slice(0, 32),
+                  tone: ['frost', 'sunrise', 'silver'].includes(c.tone) ? c.tone : 'silver',
+                  color: /^#[0-9a-fA-F]{6}$/.test(c.color || '') ? c.color : null,
+                  builtIn: Boolean(c.builtIn)
+                });
+              }
+            }
+            normalized.categories = validCats;
+          }
+
+          const categoryIds = new Set(normalized.categories.map(c => c.id));
+
+          // Experiences validation
+          if (Array.isArray(data.experiences)) {
+            const seenExpIds = new Set();
+            const validExps = [];
+            for (const e of data.experiences) {
+              if (!e || typeof e.title !== 'string' || !e.title.trim()) continue;
+              const id = typeof e.id === 'string' && e.id ? e.id : generateId('exp');
+              if (seenExpIds.has(id)) continue;
+              seenExpIds.add(id);
+
+              const status = ['want', 'completed', 'dropped'].includes(e.status) ? e.status : 'want';
+              const categoryId = typeof e.categoryId === 'string' && categoryIds.has(e.categoryId) ? e.categoryId : null;
+
+              validExps.push({
+                id,
+                title: e.title.trim().slice(0, 140),
+                description: typeof e.description === 'string' ? e.description.trim().slice(0, 600) : '',
+                categoryId,
+                location: typeof e.location === 'string' ? e.location.trim().slice(0, 100) : '',
+                notes: typeof e.notes === 'string' ? e.notes.trim().slice(0, 800) : '',
+                status,
+                createdAt: typeof e.createdAt === 'string' ? e.createdAt : new Date().toISOString(),
+                completedAt: status === 'completed'
+                  ? (typeof e.completedAt === 'string' ? e.completedAt : new Date().toISOString())
+                  : null
+              });
+            }
+            normalized.experiences = validExps;
+          }
+
+          return normalized;
+        }
+
+        save() {
+          try {
+            localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(this.state));
+          } catch (err) {
+            console.error('Failed to save LIVIT state:', err);
+            showToast('Unable to save changes locally. Check storage permissions.');
+          }
+          this.notify();
+        }
+
+        subscribe(fn) {
+          this.listeners.add(fn);
+        }
+
+        notify() {
+          this.listeners.forEach(fn => fn(this.state));
+        }
+
+        /* Profile Methods */
+        setProfileName(name, withSeeds = false) {
+          const clean = String(name || '').trim().slice(0, 40);
+          if (!clean) return false;
+          const isFirstTime = !this.state.profile;
+          this.state.profile = {
+            name: clean,
+            createdAt: this.state.profile?.createdAt || new Date().toISOString()
+          };
+          if (isFirstTime && withSeeds && this.state.experiences.length === 0) {
+            this.state.experiences = JSON.parse(JSON.stringify(SEED_EXPERIENCES));
+          }
+          this.save();
+          return true;
+        }
+
+        /* Experience CRUD */
+        addExperience({ title, description = '', categoryId = null, location = '', notes = '' }) {
+          const cleanTitle = String(title || '').trim().slice(0, 140);
+          if (!cleanTitle) return null;
+
+          const validCat = this.state.categories.some(c => c.id === categoryId) ? categoryId : null;
+          const newExp = {
+            id: generateId('exp'),
+            title: cleanTitle,
+            description: String(description || '').trim().slice(0, 600),
+            categoryId: validCat,
+            location: String(location || '').trim().slice(0, 100),
+            notes: String(notes || '').trim().slice(0, 800),
+            status: 'want',
+            createdAt: new Date().toISOString(),
+            completedAt: null
+          };
+
+          this.state.experiences.unshift(newExp);
+          this.save();
+          return newExp;
+        }
+
+        updateExperience(id, updates) {
+          const idx = this.state.experiences.findIndex(e => e.id === id);
+          if (idx === -1) return null;
+          const current = this.state.experiences[idx];
+
+          const cleanTitle = updates.title !== undefined
+            ? String(updates.title).trim().slice(0, 140)
+            : current.title;
+          if (!cleanTitle) return null;
+
+          const validCat = updates.categoryId !== undefined
+            ? (this.state.categories.some(c => c.id === updates.categoryId) ? updates.categoryId : null)
+            : current.categoryId;
+
+          const nextStatus = updates.status && ['want', 'completed', 'dropped'].includes(updates.status)
+            ? updates.status
+            : current.status;
+
+          let nextCompletedAt = current.completedAt;
+          if (nextStatus === 'completed' && current.status !== 'completed') {
+            nextCompletedAt = new Date().toISOString();
+          } else if (nextStatus !== 'completed') {
+            nextCompletedAt = null;
+          }
+
+          this.state.experiences[idx] = {
+            ...current,
+            title: cleanTitle,
+            description: updates.description !== undefined ? String(updates.description).trim().slice(0, 600) : current.description,
+            categoryId: validCat,
+            location: updates.location !== undefined ? String(updates.location).trim().slice(0, 100) : current.location,
+            notes: updates.notes !== undefined ? String(updates.notes).trim().slice(0, 800) : current.notes,
+            status: nextStatus,
+            completedAt: nextCompletedAt
+          };
+
+          this.save();
+          return this.state.experiences[idx];
+        }
+
+        deleteExperience(id) {
+          const before = this.state.experiences.length;
+          this.state.experiences = this.state.experiences.filter(e => e.id !== id);
+          if (this.state.experiences.length !== before) {
+            this.save();
+            return true;
+          }
+          return false;
+        }
+
+        /* Category CRUD */
+        addCategory(name) {
+          const clean = String(name || '').trim().slice(0, 32);
+          if (!clean) return { ok: false, error: 'Category name cannot be empty.' };
+          const duplicate = this.state.categories.some(c => c.name.toLowerCase() === clean.toLowerCase());
+          if (duplicate) return { ok: false, error: 'A category with this name already exists.' };
+
+          const tones = ['frost', 'sunrise', 'silver'];
+          const colors = ['#8B5CF6','#0EA5E9','#F97316','#10B981','#EC4899','#EAB308','#6366F1','#14B8A6','#EF4444','#A855F7','#84CC16','#F43F5E'];
+          const tone = tones[this.state.categories.length % tones.length];
+          const newCat = {
+            id: generateId('cat'),
+            name: clean,
+            tone,
+            color: colors[this.state.categories.length % colors.length],
+            builtIn: false
+          };
+          this.state.categories.push(newCat);
+          this.save();
+          return { ok: true, category: newCat };
+        }
+
+        renameCategory(id, newName) {
+          const clean = String(newName || '').trim().slice(0, 32);
+          if (!clean) return { ok: false, error: 'Category name cannot be empty.' };
+          const duplicate = this.state.categories.some(c => c.id !== id && c.name.toLowerCase() === clean.toLowerCase());
+          if (duplicate) return { ok: false, error: 'Another category already uses that name.' };
+
+          const cat = this.state.categories.find(c => c.id === id);
+          if (!cat) return { ok: false, error: 'Category not found.' };
+          cat.name = clean;
+          this.save();
+          return { ok: true };
+        }
+
+        setCategoryColor(id, color) {
+          if (!/^#[0-9a-fA-F]{6}$/.test(String(color || ''))) return { ok: false, error: 'Choose a valid colour.' };
+          const cat = this.state.categories.find(c => c.id === id);
+          if (!cat) return { ok: false, error: 'Category not found.' };
+          cat.color = color;
+          this.save();
+          return { ok: true };
+        }
+
+        deleteCategory(id) {
+          const exists = this.state.categories.some(c => c.id === id);
+          if (!exists) return false;
+          this.state.categories = this.state.categories.filter(c => c.id !== id);
+          // Preserve all experiences; convert deleted category references to uncategorised (null)
+          this.state.experiences = this.state.experiences.map(exp =>
+            exp.categoryId === id ? { ...exp, categoryId: null } : exp
+          );
+          this.save();
+          return true;
+        }
+
+        /* Export / Import / Reset */
+        exportJSON() {
+          return JSON.stringify({
+            app: 'LIVIT',
+            exportedAt: new Date().toISOString(),
+            ...this.state
+          }, null, 2);
+        }
+
+        importJSON(rawString) {
+          const parsed = JSON.parse(rawString);
+          if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed) || !Array.isArray(parsed.experiences)) {
+            throw new Error('Not a LIVIT backup file.');
+          }
+          const validated = this.validateAndNormalize(parsed);
+          if (!validated.profile && this.state.profile) {
+            validated.profile = this.state.profile;
+          }
+          this.state = validated;
+          this.save();
+        }
+
+        clearAllData() {
+          localStorage.removeItem(STORAGE_KEYS.DATA);
+          this.state = this.getDefaultState();
+          this.notify();
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         UTILITY HELPERS
+         ---------------------------------------------------------------------- */
+      function generateId(prefix) {
+        return `${prefix}_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 7)}`;
+      }
+
+      function escapeHTML(str) {
+        return String(str)
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;')
+          .replace(/'/g, '&#39;');
+      }
+
+      function getTimeGreeting(name) {
+        const hour = new Date().getHours();
+        let prefix = 'Welcome back';
+        if (hour < 12) prefix = 'Good morning';
+        else if (hour < 18) prefix = 'Good afternoon';
+        else prefix = 'Good evening';
+        return `${prefix}, ${name}`;
+      }
+
+      function formatFriendlyDate(isoString) {
+        if (!isoString) return '';
+        try {
+          const date = new Date(isoString);
+          if (isNaN(date.getTime())) return '';
+          return date.toLocaleDateString(undefined, {
+            month: 'short',
+            day: 'numeric',
+            year: 'numeric'
+          });
+        } catch {
+          return '';
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         THEME & DYNAMIC SVG FAVICON MANAGEMENT
+         ---------------------------------------------------------------------- */
+      // LIVIT uses the complete DAYONE palette collection. Each palette has a light and dark variant.
+      const PALETTES = {
+        rose:{name:'Rose',l:['#FFF7F8','#FDEBEE','#F5D3DA','#2A1218','#7D4F5B','#B8909A','#E11D48'],d:['#16090C','#221217','#3A1F27','#FCEBEF','#C79AA5','#8E6671','#FB7185']},
+        teal:{name:'Teal',l:['#F2FAFA','#E1F3F2','#C8E6E4','#0F2726','#4C7270','#8DB0AE','#0F766E'],d:['#061312','#0D1F1E','#1A3836','#E3F6F4','#8DBAB6','#5A8480','#2DD4BF']},
+        slate:{name:'Slate',l:['#F6F7F9','#EBEDF1','#D9DDE4','#1A1D24','#5B6372','#939BAA','#3B4A63'],d:['#0D0F12','#15181D','#262A32','#EEF0F3','#9AA3B2','#677080','#A9B8D0']},
+        mocha:{name:'Mocha',l:['#FAF5F1','#F1E7DF','#E3D3C6','#2B1D14','#7B6252','#B09A8B','#92400E'],d:['#140E0A','#1E1510','#33261D','#F5EBE2','#BFA999','#85705F','#E0A06A']},
+        lime:{name:'Lime',l:['#F8FBF0','#EDF4DC','#DCE8BF','#1D2610','#617042','#9BAA78','#4D7C0F'],d:['#0C1106','#151C0B','#27331A','#F0F7E2','#A5B88A','#6E7F55','#A3E635']},
+        ink:{name:'Ink',l:['#F5F3ED','#EEECE5','#E4E0D5','#202019','#68675F','#89867C','#A47B16'],d:['#080909','#101111','#292A28','#F5F2E9','#AAA69B','#77766F','#C9A227']},
+        white:{name:'White',l:['#FFFFFF','#F7F7F8','#E7E7EA','#0A0A0A','#6B6B73','#A1A1AA','#2563EB'],d:['#0B0B0E','#15151A','#27272E','#F4F4F5','#A1A1AA','#6B6B73','#60A5FA']},
+        ocean:{name:'Ocean',l:['#F3F8FC','#E6F0F8','#D3E2EE','#12263A','#55708A','#8CA3B8','#0284C7'],d:['#08121C','#0F1D2B','#1C3247','#E6F1FA','#8FAAC2','#5C788F','#38BDF8']},
+        forest:{name:'Forest',l:['#F4F8F4','#E7F0E8','#D4E4D6','#14281A','#55705B','#8DA692','#15803D'],d:['#0A130D','#112018','#1F3727','#E8F5EB','#8FB097','#5E7F66','#4ADE80']},
+        sunset:{name:'Sunset',l:['#FFF8F3','#FFEFE4','#F6DCCB','#2B1710','#8A5E4B','#BE9A88','#EA580C'],d:['#170C09','#231410','#3B221A','#FDEEE6','#C79B88','#8F6859','#FB923C']},
+        violet:{name:'Violet',l:['#FAF7FF','#F1EAFD','#E2D6F6','#1F1535','#6F5F8F','#A596C2','#7C3AED'],d:['#0F0A1A','#181029','#2B1F45','#F1EBFD','#A99BCB','#75679A','#A78BFA']},
+        sand:{name:'Sand',l:['#FAF6EE','#F1EADA','#E4DAC2','#2A2417','#7A6E55','#AFA284','#B45309'],d:['#15120C','#1F1B12','#352E1E','#F6EFDD','#BDB093','#857A60','#D6A441']},
+        midnight:{name:'Midnight',l:['#F1F3F9','#E5E9F4','#D3D9EA','#101528','#5A6385','#8F98B8','#4F46E5'],d:['#070B18','#0E1426','#1B2440','#E8ECFA','#8E99C0','#5B6690','#818CF8']}
+      };
+      const THEMES = Object.entries(PALETTES).map(([id,p]) => ({id,name:p.name,sw:[p.l[0],p.l[1],p.l[6]]}));
+      let currentMode = 'light';
+      const themeMode = () => currentMode;
+      let lastByMode = { light: 'ink', dark: 'ink' };
+      let themeTimer = null;
+
+      function getInitialTheme() {
+        let saved = null;
+        try { saved = localStorage.getItem(STORAGE_KEYS.THEME); } catch (e) {}
+        currentMode = (() => { try { const m=localStorage.getItem('livit_mode'); return ['light','dark','auto'].includes(m)?m:'light'; } catch(e) { return 'light'; } })();
+        if (THEMES.some(t => t.id === saved)) return saved;
+        return 'ink';
+      }
+
+      function applyTheme(theme) {
+        const mode = currentMode === 'auto' ? ((window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light') : currentMode;
+        const palette = PALETTES[theme] || PALETTES.ink;
+        const colors = palette[mode === 'dark' ? 'd' : 'l'];
+        const [bg,soft,line,ink,mute,faint,acc] = colors;
+        const root = document.documentElement;
+        const vars = {
+          '--bg-canvas':bg,'--bg-sidebar':`color-mix(in srgb, ${soft} 72%, ${bg})`,'--bg-surface':`color-mix(in srgb, ${soft} 55%, ${bg})`,'--bg-surface-hover':`color-mix(in srgb, ${soft} 76%, ${bg})`,'--bg-subtle':soft,'--bg-glass':mode==='dark'?'color-mix(in srgb, '+bg+' 88%, transparent)':'color-mix(in srgb, '+bg+' 86%, transparent)','--border-hairline':line,'--border-strong':`color-mix(in srgb, ${line} 45%, ${mute})`,'--ink-primary':ink,'--ink-secondary':mute,'--ink-muted':faint,'--ink-inverse':mode==='dark'?bg:'#FFFFFF','--btn-primary-bg':acc,'--btn-primary-hover':`color-mix(in srgb, ${acc} 82%, ${ink})`,'--btn-primary-ink':'#FFFFFF','--frost-bg':`color-mix(in srgb, ${acc} 12%, ${bg})`,'--frost-border':`color-mix(in srgb, ${acc} 28%, ${line})`,'--frost-ink':acc,'--sunrise-bg':`color-mix(in srgb, ${acc} 10%, ${bg})`,'--sunrise-border':`color-mix(in srgb, ${acc} 25%, ${line})`,'--sunrise-ink':acc,'--silver-bg':soft,'--silver-border':line,'--silver-ink':mute,'--danger-bg':mode==='dark'?'rgba(235,87,87,.14)':'#FDF0EF','--danger-border':mode==='dark'?'rgba(235,87,87,.28)':'#F5D0CD','--danger-ink':mode==='dark'?'#F27979':'#B8332A'
+        };
+        Object.entries(vars).forEach(([k,v])=>root.style.setProperty(k,v));
+        root.style.colorScheme = mode;
+        const actualMode = mode;
+        root.classList.add('theming');
+        clearTimeout(themeTimer);
+        themeTimer = setTimeout(() => root.classList.remove('theming'), 450);
+        root.setAttribute('data-theme', theme);
+        root.setAttribute('data-mode', actualMode);
+        lastByMode[actualMode] = theme;
+        try { localStorage.setItem(STORAGE_KEYS.THEME, theme); localStorage.setItem('livit_mode', currentMode); } catch (e) {}
+
+        // Update Sidebar Toggle Label & Icon
+        const label = document.getElementById('sidebar-theme-label');
+        const sideIcon = document.getElementById('sidebar-theme-icon');
+        const mobIcon = document.getElementById('mobile-theme-icon');
+
+        const sunPath = '<circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>';
+        const moonPath = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>';
+
+        if (mode === 'dark') {
+          if (label) label.textContent = 'Light Mode';
+          if (sideIcon) sideIcon.innerHTML = sunPath;
+          if (mobIcon) mobIcon.innerHTML = sunPath;
+        } else {
+          if (label) label.textContent = 'Dark Mode';
+          if (sideIcon) sideIcon.innerHTML = moonPath;
+          if (mobIcon) mobIcon.innerHTML = moonPath;
+        }
+
+        // Update Dynamic SVG Data-URI Favicon matching the active LIVIT app icon
+        const faviconEl = document.getElementById('dynamic-favicon');
+        if (faviconEl) {
+          const isDark = mode === 'dark';
+          const bg = isDark ? '%23121316' : '%23FFFFFF';
+          const fg = isDark ? '%23FFFFFF' : '%23141518';
+          const strokeAttr = isDark ? '' : " stroke='%23E5E4DF' stroke-width='2'";
+          const svgUri = `data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 120 120'><rect x='2' y='2' width='116' height='116' rx='28' fill='${bg}'${strokeAttr}/><path d='M 55.5 23.3 A 37 37 0 1 0 77.5 27.5' fill='none' stroke='${fg}' stroke-width='6.5'/><path d='M 28.5 79 L 42 57 L 48.5 65.5 L 60 44.5 L 71.5 65.5 L 78 57 L 91.5 79' fill='none' stroke='${fg}' stroke-width='6.5'/><path d='M 60 46 V 20 L 82 28.5 L 60 36.5' fill='${fg}'/><rect x='57.2' y='20' width='5.6' height='27' fill='${fg}'/></svg>`;
+          faviconEl.setAttribute('href', svgUri);
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         TOAST NOTIFICATION HELPER
+         ---------------------------------------------------------------------- */
+      function showToast(message, undoCallback = null) {
+        const container = document.getElementById('toast-container');
+        if (!container) return;
+
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+
+        const msgSpan = document.createElement('span');
+        msgSpan.textContent = message;
+        toast.appendChild(msgSpan);
+
+        if (typeof undoCallback === 'function') {
+          const undoBtn = document.createElement('button');
+          undoBtn.type = 'button';
+          undoBtn.className = 'toast-undo-btn';
+          undoBtn.textContent = 'Undo';
+          undoBtn.addEventListener('click', () => {
+            undoCallback();
+            toast.remove();
+          });
+          toast.appendChild(undoBtn);
+        }
+
+        while (container.children.length >= 3) container.firstChild.remove();
+        container.appendChild(toast);
+        setTimeout(() => {
+          toast.style.opacity = '0';
+          toast.style.transform = 'translateY(6px)';
+          toast.style.transition = 'all 180ms ease';
+          setTimeout(() => toast.remove(), 200);
+        }, 3800);
+      }
+
+      /* ----------------------------------------------------------------------
+         CELEBRATION ENGINE (confetti, chime, vibration, milestone finale)
+         ---------------------------------------------------------------------- */
+      const MSGS = ["Congratulations, you did it!", "You made it!", "Damn bro, you actually did it!", "Good to go. Next one!", "Another dream lived.", "Legend behaviour. Keep going.", "Boom. That one is yours now.", "Calm, steady, unstoppable.", "Look at you making it happen.", "One more memory in the bank."];
+      const FX = { on: (() => { try { return localStorage.getItem('livit_fx') !== 'off'; } catch (e) { return true; } })() };
+      const reduceMotion = () => window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let fxCanvas = null, fxCtx = null, fxParts = [], fxRun = false, audioCtx = null, finaleEl = null, finaleTimer = null;
+
+      function fxInit() {
+        if (fxCanvas) return;
+        fxCanvas = document.createElement('canvas');
+        fxCanvas.className = 'fx-canvas';
+        document.body.appendChild(fxCanvas);
+        fxCtx = fxCanvas.getContext('2d');
+        const size = () => { fxCanvas.width = window.innerWidth; fxCanvas.height = window.innerHeight; };
+        size();
+        window.addEventListener('resize', size);
+      }
+
+      function fxBurst(x, y, n) {
+        if (!FX.on || reduceMotion()) return;
+        fxInit();
+        const cols = ['#7CB3F0', '#E8A46D', '#F472B6', '#34D399', '#FACC15', '#A78BFA'];
+        for (let i = 0; i < n; i++) {
+          const a = Math.random() * Math.PI * 2, v = 3 + Math.random() * (n > 60 ? 11 : 6);
+          fxParts.push({ x, y, vx: Math.cos(a) * v, vy: Math.sin(a) * v - 4, s: 4 + Math.random() * 5, c: cols[i % cols.length], r: Math.random() * 6, l: 1 });
+        }
+        if (!fxRun) { fxRun = true; requestAnimationFrame(fxTick); }
+      }
+
+      function fxTick() {
+        fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height);
+        fxParts = fxParts.filter(p => p.l > 0);
+        for (const p of fxParts) {
+          p.x += p.vx; p.y += p.vy; p.vy += 0.22; p.vx *= 0.99; p.r += 0.2; p.l -= 0.012;
+          fxCtx.save();
+          fxCtx.globalAlpha = Math.max(p.l, 0);
+          fxCtx.translate(p.x, p.y);
+          fxCtx.rotate(p.r);
+          fxCtx.fillStyle = p.c;
+          fxCtx.fillRect(-p.s / 2, -p.s / 3, p.s, p.s * 0.6);
+          fxCtx.restore();
+        }
+        if (fxParts.length) requestAnimationFrame(fxTick);
+        else { fxRun = false; fxCtx.clearRect(0, 0, fxCanvas.width, fxCanvas.height); }
+      }
+
+      function fxChime(big) {
+        if (!FX.on) return;
+        try {
+          audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+          (big ? [523, 659, 784, 1047] : [659, 880]).forEach((f, i) => {
+            const o = audioCtx.createOscillator(), g = audioCtx.createGain();
+            o.type = 'sine'; o.frequency.value = f;
+            o.connect(g); g.connect(audioCtx.destination);
+            const t = audioCtx.currentTime + i * 0.1;
+            g.gain.setValueAtTime(0, t);
+            g.gain.linearRampToValueAtTime(0.12, t + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.6);
+            o.start(t); o.stop(t + 0.65);
+          });
+        } catch (e) { /* audio unavailable */ }
+      }
+
+      function celebrate(x, y) {
+        if (!FX.on) return;
+        fxBurst(x, y, 36);
+        fxChime(false);
+        if (navigator.vibrate) navigator.vibrate([40]);
+      }
+
+      function showFinale(title, sub) {
+        if (!FX.on) return;
+        if (!finaleEl) {
+          finaleEl = document.createElement('div');
+          finaleEl.className = 'fx-finale';
+          finaleEl.innerHTML = '<div><h2></h2><p></p></div>';
+          finaleEl.addEventListener('click', () => finaleEl.classList.remove('show'));
+          document.body.appendChild(finaleEl);
+        }
+        finaleEl.querySelector('h2').textContent = title;
+        finaleEl.querySelector('p').textContent = sub;
+        finaleEl.classList.add('show');
+        const w = window.innerWidth, h = window.innerHeight;
+        fxBurst(w / 2, h / 2, 140);
+        setTimeout(() => fxBurst(w / 3, h / 2, 80), 300);
+        setTimeout(() => fxBurst(w * 2 / 3, h / 2, 80), 500);
+        fxChime(true);
+        if (navigator.vibrate) navigator.vibrate([60, 50, 60, 50, 160]);
+        clearTimeout(finaleTimer);
+        finaleTimer = setTimeout(() => finaleEl.classList.remove('show'), 3600);
+      }
+
+      /* ----------------------------------------------------------------------
+         UI CONTROLLER & VIEW RENDERING
+         ---------------------------------------------------------------------- */
+      const store = new LivitStore();
+
+      /* ----------------------------------------------------------------------
+         FIREBASE AUTHENTICATION + PRIVATE CLOUD SYNC
+         One private document per user: users/{uid}/livit/state
+         ---------------------------------------------------------------------- */
+      const firebaseConfig = {
+        apiKey: "AIzaSyBJf21Zac2kzL0K84D10rzwsRxbEbv4rq8",
+        authDomain: "livit-lifebucket.firebaseapp.com",
+        projectId: "livit-lifebucket",
+        storageBucket: "livit-lifebucket.firebasestorage.app",
+        messagingSenderId: "17584760103",
+        appId: "1:17584760103:web:d3afb6cc39f091497db502"
+      };
+      const firebaseApp = initializeApp(firebaseConfig);
+      const auth = getAuth(firebaseApp);
+      const db = getFirestore(firebaseApp);
+      const googleProvider = new GoogleAuthProvider();
+      googleProvider.setCustomParameters({ prompt: 'select_account' });
+
+      let cloudUser = null;
+      let cloudUnsubscribe = null;
+      let applyingCloudState = false;
+      let cloudReady = false;
+      let cloudWriteChain = Promise.resolve();
+      let cloudSyncStatus = 'local';
+
+      function hasMeaningfulLocalData(state) {
+        return Boolean(
+          (state.profile && state.profile.name) ||
+          (state.experiences && state.experiences.length) ||
+          (state.categories && state.categories.some(c => !c.builtIn))
+        );
+      }
+
+      function setCloudStatus(status, message) {
+        cloudSyncStatus = status;
+        const statusEl = document.getElementById('livit-cloud-status');
+        if (statusEl) {
+          statusEl.textContent = message || ({
+            local: 'Local mode · Sign in to sync across devices',
+            connecting: 'Connecting to your private cloud…',
+            synced: 'Synced · Your LIVIT is up to date',
+            saving: 'Saving to cloud…',
+            offline: 'Offline · Changes saved on this device',
+            error: 'Sync issue · Your local data is safe'
+          }[status] || status);
+          statusEl.dataset.state = status;
+        }
+      }
+
+      function applyCloudState(remoteState) {
+        const validated = store.validateAndNormalize(remoteState);
+        applyingCloudState = true;
+        try {
+          store.state = validated;
+          localStorage.setItem(STORAGE_KEYS.DATA, JSON.stringify(validated));
+          store.notify();
+        } finally {
+          applyingCloudState = false;
+        }
+      }
+
+      async function writeCloudState() {
+        if (!cloudUser || !cloudReady || applyingCloudState) return;
+        const uid = cloudUser.uid;
+        const payload = JSON.parse(JSON.stringify(store.state));
+        const ref = doc(db, 'users', uid, 'livit', 'state');
+        cloudWriteChain = cloudWriteChain.then(async () => {
+          if (!cloudUser || cloudUser.uid !== uid || applyingCloudState) return;
+          setCloudStatus('saving');
+          await setDoc(ref, {
+            state: payload,
+            schemaVersion: 1,
+            updatedAt: serverTimestamp()
+          }, { merge: true });
+          if (cloudUser && cloudUser.uid === uid) setCloudStatus('synced');
+        }).catch(err => {
+          console.error('LIVIT cloud save failed:', err);
+          setCloudStatus('error');
+          showToast('Cloud sync failed. Your changes remain saved on this device.');
+        });
+        return cloudWriteChain;
+      }
+
+      async function connectCloudUser(user) {
+        if (cloudUnsubscribe) cloudUnsubscribe();
+        cloudUnsubscribe = null;
+        cloudUser = user;
+        cloudReady = false;
+        setCloudStatus('connecting');
+
+        const ref = doc(db, 'users', user.uid, 'livit', 'state');
+        try {
+          const snap = await getDoc(ref);
+          if (!cloudUser || cloudUser.uid !== user.uid) return;
+
+          const localOwnerUid = localStorage.getItem('livit_cloud_owner_uid');
+          if (snap.exists() && snap.data().state) {
+            // A returning account uses its cloud copy; local device data is not silently merged.
+            applyCloudState(snap.data().state);
+            localStorage.setItem('livit_cloud_owner_uid', user.uid);
+          } else {
+            // First sign-in imports this browser's data only when it is not owned by another account.
+            const firstState = (!localOwnerUid || localOwnerUid === user.uid)
+              ? JSON.parse(JSON.stringify(store.state))
+              : store.getDefaultState();
+            if (localOwnerUid && localOwnerUid !== user.uid) applyCloudState(firstState);
+            await setDoc(ref, {
+              state: firstState,
+              schemaVersion: 1,
+              createdAt: serverTimestamp(),
+              updatedAt: serverTimestamp()
+            });
+            localStorage.setItem('livit_cloud_owner_uid', user.uid);
+          }
+
+          if (!cloudUser || cloudUser.uid !== user.uid) return;
+          cloudReady = true;
+          setCloudStatus('synced');
+
+          let firstSnapshot = true;
+          cloudUnsubscribe = onSnapshot(ref, snapshot => {
+            if (!snapshot.exists() || !snapshot.data().state) return;
+            const incoming = snapshot.data().state;
+            const current = JSON.stringify(store.state);
+            const next = JSON.stringify(incoming);
+            if (firstSnapshot) {
+              firstSnapshot = false;
+              if (current !== next) applyCloudState(incoming);
+              setCloudStatus('synced');
+              return;
+            }
+            if (current !== next) applyCloudState(incoming);
+            setCloudStatus('synced');
+          }, err => {
+            console.error('LIVIT cloud listener failed:', err);
+            setCloudStatus('error');
+          });
+        } catch (err) {
+          console.error('LIVIT cloud connection failed:', err);
+          cloudReady = false;
+          setCloudStatus('error');
+          showToast('Could not connect to LIVIT cloud. Your local data is safe.');
+        }
+      }
+
+      async function handleGoogleSignIn() {
+        try {
+          await signInWithPopup(auth, googleProvider);
+        } catch (err) {
+          console.error('Google sign-in failed:', err);
+          showToast(err.code === 'auth/unauthorized-domain'
+            ? 'This website domain is not yet authorised in Firebase.'
+            : (err.code === 'auth/popup-blocked'
+              ? 'Your browser blocked the sign-in popup. Allow popups and try again.'
+              : 'Google sign-in failed: ' + (err.message || err.code)));
+        }
+      }
+
+      async function handleEmailSignIn(createAccount) {
+        const email = document.getElementById('livit-auth-email')?.value.trim();
+        const password = document.getElementById('livit-auth-password')?.value || '';
+        if (!email || !password) {
+          showToast('Enter your email address and password.');
+          return;
+        }
+        if (password.length < 6) {
+          showToast('Password must contain at least 6 characters.');
+          return;
+        }
+        try {
+          if (createAccount) {
+            const credential = await createUserWithEmailAndPassword(auth, email, password);
+            const displayName = email.split('@')[0].slice(0, 40);
+            await updateProfile(credential.user, { displayName });
+          } else {
+            await signInWithEmailAndPassword(auth, email, password);
+          }
+        } catch (err) {
+          console.error('Email authentication failed:', err);
+          const messages = {
+            'auth/email-already-in-use': 'An account already exists with this email. Sign in instead.',
+            'auth/invalid-credential': 'Email or password is incorrect.',
+            'auth/weak-password': 'Choose a stronger password (at least 6 characters).',
+            'auth/invalid-email': 'Enter a valid email address.',
+            'auth/unauthorized-domain': 'This website domain is not yet authorised in Firebase.'
+          };
+          showToast(messages[err.code] || ('Account action failed: ' + (err.message || err.code)));
+        }
+      }
+
+      onAuthStateChanged(auth, async user => {
+        if (!user) {
+          if (cloudUnsubscribe) cloudUnsubscribe();
+          cloudUnsubscribe = null;
+          cloudUser = null;
+          cloudReady = false;
+          setCloudStatus('local');
+        } else {
+          await connectCloudUser(user);
+        }
+        if (uiState.activeSection === 'settings') renderActiveSection();
+        updateCloudAccountHeader();
+      });
+
+      function updateCloudAccountHeader() {
+        const el = document.getElementById('livit-cloud-account');
+        if (!el) return;
+        if (cloudUser) {
+          el.innerHTML = `<div class="livit-account-line"><strong>${escapeHTML(cloudUser.displayName || cloudUser.email || 'LIVIT account')}</strong><span>${escapeHTML(cloudUser.email || '')}</span></div>`;
+        } else {
+          el.textContent = 'Not signed in · This device only';
+        }
+      }
+      let currentTheme = getInitialTheme();
+      applyTheme(currentTheme);
+
+      const uiState = {
+        activeSection: 'want', // 'want' | 'completed' | 'dropped' | 'categories' | 'settings'
+        searchQuery: '',
+        selectedCategoryId: 'all', // 'all' | 'uncategorised' | categoryId
+        openMenuId: null,
+        animate: true,
+        refocusQuick: false,
+        searchTimer: null,
+        busy: new Set()
+      };
+
+      /* Close open card overflow menus on outside click */
+      document.addEventListener('click', (e) => {
+        if (uiState.openMenuId && !e.target.closest('.dropdown-wrap')) {
+          uiState.openMenuId = null;
+          renderActiveSection();
+        }
+      });
+
+      /* Global Escape key handler for modals */
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeExperienceModal();
+          closeConfirmModal();
+          closeRenameCategoryModal();
+          if (uiState.openMenuId) {
+            uiState.openMenuId = null;
+            renderActiveSection();
+          }
+        }
+      });
+
+      /* Theme Toggles */
+      function toggleTheme() {
+        const resolved = currentMode === 'auto' ? ((matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light') : currentMode;
+        currentMode = resolved === 'dark' ? 'light' : 'dark';
+        applyTheme(currentTheme);
+        if (uiState.activeSection === 'settings') {
+          renderActiveSection();
+        }
+      }
+
+      document.getElementById('sidebar-theme-btn').addEventListener('click', toggleTheme);
+      document.getElementById('mobile-theme-btn').addEventListener('click', toggleTheme);
+
+      /* Navigation Binding */
+      document.querySelectorAll('[data-nav]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-nav');
+          navigateTo(target);
+        });
+      });
+
+      function navigateTo(section, preserveFilter = false) {
+        uiState.activeSection = section;
+        uiState.openMenuId = null;
+        uiState.animate = true;
+        if (!preserveFilter) {
+          uiState.searchQuery = '';
+          uiState.selectedCategoryId = 'all';
+        }
+
+        document.querySelectorAll('[data-nav]').forEach(btn => {
+          btn.classList.toggle('active', btn.getAttribute('data-nav') === section);
+        });
+
+        renderActiveSection();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      /* Update Sidebar Counts */
+      function updateNavCounts() {
+        const wantCount = store.state.experiences.filter(e => e.status === 'want').length;
+        const compCount = store.state.experiences.filter(e => e.status === 'completed').length;
+        const dropCount = store.state.experiences.filter(e => e.status === 'dropped').length;
+        const catCount = store.state.categories.length;
+
+        document.getElementById('nav-count-want').textContent = wantCount;
+        document.getElementById('nav-count-completed').textContent = compCount;
+        document.getElementById('nav-count-dropped').textContent = dropCount;
+        document.getElementById('nav-count-categories').textContent = catCount;
+      }
+
+      /* Root Render Router */
+      function renderApp() {
+        const onboardingEl = document.getElementById('onboarding-view');
+        const shellEl = document.getElementById('app-shell');
+
+        if (!store.state.profile) {
+          onboardingEl.classList.remove('hidden');
+          shellEl.classList.add('hidden');
+          setTimeout(() => document.getElementById('onboarding-name-input')?.focus(), 50);
+          return;
+        }
+
+        onboardingEl.classList.add('hidden');
+        shellEl.classList.remove('hidden');
+        updateNavCounts();
+        renderActiveSection();
+      }
+
+      /* Onboarding Form Handler */
+      document.getElementById('onboarding-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const input = document.getElementById('onboarding-name-input');
+        const errorEl = document.getElementById('onboarding-error');
+        const withSeeds = document.getElementById('onboarding-seed-checkbox').checked;
+        const name = input.value.trim();
+
+        if (!name) {
+          errorEl.textContent = 'Please tell us what we should call you.';
+          errorEl.classList.remove('hidden');
+          input.focus();
+          return;
+        }
+
+        errorEl.classList.add('hidden');
+        store.setProfileName(name, withSeeds);
+        uiState.activeSection = 'want';
+        renderApp();
+      });
+
+      /* ----------------------------------------------------------------------
+         SECTION RENDERERS
+         ---------------------------------------------------------------------- */
+      function renderActiveSection() {
+        const container = document.getElementById('main-content');
+        if (!container || !store.state.profile) return;
+
+        switch (uiState.activeSection) {
+          case 'want':
+            renderExperiencesView(container, 'want');
+            break;
+          case 'completed':
+            renderExperiencesView(container, 'completed');
+            break;
+          case 'dropped':
+            renderExperiencesView(container, 'dropped');
+            break;
+          case 'categories':
+            renderCategoriesView(container);
+            break;
+          case 'settings':
+            renderSettingsView(container);
+            break;
+        }
+      }
+
+      function renderExperiencesView(container, status) {
+        const userName = store.state.profile.name;
+        const allForStatus = store.state.experiences.filter(e => e.status === status);
+
+        // Apply search & category filter
+        const query = uiState.searchQuery.trim().toLowerCase();
+        const filtered = allForStatus.filter(exp => {
+          const matchesCategory =
+            uiState.selectedCategoryId === 'all' ||
+            (uiState.selectedCategoryId === 'uncategorised' && !exp.categoryId) ||
+            exp.categoryId === uiState.selectedCategoryId;
+
+          if (!matchesCategory) return false;
+          if (!query) return true;
+
+          return (
+            exp.title.toLowerCase().includes(query) ||
+            exp.description.toLowerCase().includes(query) ||
+            exp.location.toLowerCase().includes(query) ||
+            exp.notes.toLowerCase().includes(query)
+          );
+        });
+
+        if (status === 'completed') {
+          filtered.sort((a, b) => String(b.completedAt || '').localeCompare(String(a.completedAt || '')));
+        }
+
+        const headerTitles = {
+          want: {
+            eyebrow: getTimeGreeting(userName),
+            title: 'Want to Do',
+            subtitle: 'Experiences waiting for their moment.'
+          },
+          completed: {
+            eyebrow: 'Moments Lived',
+            title: 'Completed',
+            subtitle: 'The experiences you have turned into memories.'
+          },
+          dropped: {
+            eyebrow: 'Set Aside',
+            title: 'Dropped',
+            subtitle: 'Experiences you chose not to pursue—always restorable.'
+          }
+        };
+
+        const meta = headerTitles[status];
+        const hasUncategorised = allForStatus.some(e => !e.categoryId);
+
+        let html = `
+          <header class="section-header">
+            <div>
+              <p class="greeting-eyebrow">${escapeHTML(meta.eyebrow)}</p>
+              <h1 class="section-title">${escapeHTML(meta.title)}</h1>
+              <p class="section-subtitle">${escapeHTML(meta.subtitle)}</p>
+            </div>
+            ${status === 'want' ? `
+              <button type="button" id="header-add-exp-btn" class="btn btn-primary">
+                <svg style="width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2.2;" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                <span>Add Experience</span>
+              </button>
+            ` : ''}
+          </header>
+        `;
+
+        // Inline Quick-Add Bar for Want to Do
+        if (status === 'want') {
+          html += `
+            <form id="quick-add-form" class="quick-add-bar" autocomplete="off">
+              <svg style="width:18px;height:18px;stroke:var(--ink-muted);fill:none;stroke-width:2;flex-shrink:0;" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              <input
+                type="text"
+                id="quick-add-input"
+                class="quick-add-input"
+                placeholder="Add something you want to experience..."
+                maxlength="140"
+                aria-label="Quick add experience title"
+              />
+              <button type="submit" class="btn btn-secondary btn-sm">Quick Add</button>
+            </form>
+          `;
+        }
+
+        // Search & Category Filter Toolbar (shown whenever there are items or active filters)
+        if (allForStatus.length > 0 || query || uiState.selectedCategoryId !== 'all') {
+          html += `
+            <div class="controls-toolbar">
+              <div class="search-box">
+                <svg class="search-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input
+                  type="search"
+                  id="exp-search-input"
+                  class="input search-input"
+                  placeholder="Search by title, location, description, or notes..."
+                  value="${escapeHTML(uiState.searchQuery)}"
+                  aria-label="Search experiences"
+                />
+                ${uiState.searchQuery ? `<button type="button" id="exp-search-clear" class="search-clear" aria-label="Clear search">✕</button>` : ''}
+              </div>
+
+              <div class="filter-pills-scroll" role="tablist" aria-label="Filter by category">
+                <button type="button" class="filter-pill ${uiState.selectedCategoryId === 'all' ? 'active' : ''}" data-cat-filter="all">
+                  All (${allForStatus.length})
+                </button>
+                ${store.state.categories.map(cat => {
+                  const count = allForStatus.filter(e => e.categoryId === cat.id).length;
+                  return `
+                    <button type="button" class="filter-pill ${uiState.selectedCategoryId === cat.id ? 'active' : ''}" data-cat-filter="${escapeHTML(cat.id)}">
+                      ${escapeHTML(cat.name)}${count > 0 ? ` (${count})` : ''}
+                    </button>
+                  `;
+                }).join('')}
+                ${hasUncategorised || uiState.selectedCategoryId === 'uncategorised' ? `
+                  <button type="button" class="filter-pill ${uiState.selectedCategoryId === 'uncategorised' ? 'active' : ''}" data-cat-filter="uncategorised">
+                    Uncategorised
+                  </button>
+                ` : ''}
+              </div>
+            </div>
+          `;
+        }
+
+        // Empty States vs Experience List
+        if (allForStatus.length === 0) {
+          html += renderEmptyStateForStatus(status);
+        } else if (filtered.length === 0) {
+          html += `
+            <div class="empty-state">
+              <h2 class="empty-state-title">No matching experiences</h2>
+              <p class="empty-state-text">Try adjusting your search keywords or clearing the active category filter.</p>
+              <button type="button" id="reset-filters-btn" class="btn btn-secondary">Clear Filters</button>
+            </div>
+          `;
+        } else {
+          html += `<div class="experience-list ${uiState.animate ? 'animate' : ''}">${filtered.map(exp => renderExperienceCard(exp)).join('')}</div>`;
+        }
+
+        container.innerHTML = html;
+        uiState.animate = false;
+        bindExperiencesViewEvents(container, status);
+        if (uiState.refocusQuick) {
+          uiState.refocusQuick = false;
+          container.querySelector('#quick-add-input')?.focus();
+        }
+      }
+
+      function renderEmptyStateForStatus(status) {
+        const iconMarkup = `
+          <svg class="empty-state-icon icon-for-light" aria-hidden="true"><use href="#livit-icon-light" /></svg>
+          <svg class="empty-state-icon icon-for-dark" aria-hidden="true"><use href="#livit-icon-dark" /></svg>
+        `;
+
+        if (status === 'want') {
+          return `
+            <div class="empty-state">
+              ${iconMarkup}
+              <h2 class="empty-state-title">Your next great experience starts here.</h2>
+              <p class="empty-state-text">Add something you've always wanted to do.</p>
+              <button type="button" id="empty-add-exp-btn" class="btn btn-primary">Add Experience</button>
+            </div>
+          `;
+        }
+
+        if (status === 'completed') {
+          return `
+            <div class="empty-state">
+              ${iconMarkup}
+              <h2 class="empty-state-title">No completed experiences yet.</h2>
+              <p class="empty-state-text">When you live out an experience from your Want to Do list, mark it completed to preserve the memory here.</p>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="empty-state">
+            ${iconMarkup}
+            <h2 class="empty-state-title">Nothing dropped.</h2>
+            <p class="empty-state-text">Experiences you decide to set aside will appear here, and you can restore them anytime.</p>
+          </div>
+        `;
+      }
+
+      function renderExperienceCard(exp) {
+        const category = exp.categoryId
+          ? store.state.categories.find(c => c.id === exp.categoryId)
+          : null;
+
+        const badgeClass = category
+          ? (category.tone === 'frost' ? 'badge-frost' : category.tone === 'sunrise' ? 'badge-sunrise' : 'badge-silver')
+          : 'badge-silver';
+
+        const categoryLabel = category ? category.name : 'Uncategorised';
+        const isMenuOpen = uiState.openMenuId === exp.id;
+
+        return `
+          <article class="exp-card ${exp.status === 'dropped' ? 'is-dropped' : ''}" data-exp-id="${escapeHTML(exp.id)}">
+            ${exp.status === 'want' ? `<button type="button" class="exp-check" style="--check-color:${category && category.color ? category.color : '#0EA5E9'}" data-action="complete" data-id="${escapeHTML(exp.id)}" aria-label="Mark completed"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"/></svg></button>` : exp.status === 'completed' ? `<button type="button" class="exp-check on" style="--check-color:${category && category.color ? category.color : '#0EA5E9'}" data-action="restore" data-id="${escapeHTML(exp.id)}" aria-label="Mark as not done"><svg viewBox="0 0 24 24"><polyline points="4 12.5 9.5 18 20 6.5"/></svg></button>` : ''}
+            <div class="exp-card-body">
+              <div class="exp-meta-top">
+                <span class="category-badge ${badgeClass}" ${category && category.color ? `style="--cat-color:${category.color};background:color-mix(in srgb, ${category.color} 13%, var(--bg-surface));color:${category.color};border-color:color-mix(in srgb, ${category.color} 35%, transparent)"` : ''}>${escapeHTML(categoryLabel)}</span>
+                ${exp.location ? `
+                  <span class="exp-location">
+                    <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <span>${escapeHTML(exp.location)}</span>
+                  </span>
+                ` : ''}
+                ${exp.status === 'completed' && exp.completedAt ? `
+                  <span class="exp-date-meta">Completed ${escapeHTML(formatFriendlyDate(exp.completedAt))}</span>
+                ` : ''}
+              </div>
+
+              <h3 class="exp-title">${escapeHTML(exp.title)}</h3>
+
+              ${exp.description ? `<p class="exp-description">${escapeHTML(exp.description)}</p>` : ''}
+
+              ${exp.notes ? `<div class="exp-notes-preview">${escapeHTML(exp.notes)}</div>` : ''}
+            </div>
+
+            <div class="exp-card-actions">
+              ${exp.status === 'want' ? `
+                <button type="button" class="btn-complete" data-action="complete" data-id="${escapeHTML(exp.id)}" title="Mark Completed">
+                  <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+                  <span>Complete</span>
+                </button>
+              ` : `
+                <button type="button" class="btn btn-secondary btn-sm" data-action="restore" data-id="${escapeHTML(exp.id)}">
+                  Restore to Want to Do
+                </button>
+              `}
+
+              <button type="button" class="btn btn-ghost btn-sm" data-action="edit" data-id="${escapeHTML(exp.id)}">
+                Edit
+              </button>
+
+              <div class="dropdown-wrap">
+                <button type="button" class="btn-icon" data-action="toggle-menu" data-id="${escapeHTML(exp.id)}" aria-label="More options" aria-expanded="${isMenuOpen}">
+                  <svg class="nav-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/></svg>
+                </button>
+                ${isMenuOpen ? `
+                  <div class="dropdown-menu" role="menu">
+                    ${exp.status === 'want' ? `
+                      <button type="button" class="dropdown-item" role="menuitem" data-action="drop" data-id="${escapeHTML(exp.id)}">
+                        Move to Dropped
+                      </button>
+                    ` : ''}
+                    ${exp.status === 'dropped' ? `
+                      <button type="button" class="dropdown-item" role="menuitem" data-action="complete-direct" data-id="${escapeHTML(exp.id)}">
+                        Mark Completed
+                      </button>
+                    ` : ''}
+                    <button type="button" class="dropdown-item danger" role="menuitem" data-action="delete" data-id="${escapeHTML(exp.id)}">
+                      Delete Permanently
+                    </button>
+                  </div>
+                ` : ''}
+              </div>
+            </div>
+          </article>
+        `;
+      }
+
+      function bindExperiencesViewEvents(container, status) {
+        container.querySelector('#header-add-exp-btn')?.addEventListener('click', () => openExperienceModal());
+        container.querySelector('#empty-add-exp-btn')?.addEventListener('click', () => openExperienceModal());
+
+        // Quick-Add Form
+        const quickForm = container.querySelector('#quick-add-form');
+        if (quickForm) {
+          quickForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const input = container.querySelector('#quick-add-input');
+            const title = input.value.trim();
+            if (!title) {
+              input.focus();
+              return;
+            }
+            const defaultCat = uiState.selectedCategoryId !== 'all' && uiState.selectedCategoryId !== 'uncategorised'
+              ? uiState.selectedCategoryId
+              : null;
+            uiState.refocusQuick = true;
+            store.addExperience({ title, categoryId: defaultCat });
+            showToast('Added to Want to Do');
+          });
+        }
+
+        // Search Input (preserve focus & cursor position)
+        const searchInput = container.querySelector('#exp-search-input');
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            uiState.searchQuery = e.target.value;
+            clearTimeout(uiState.searchTimer);
+            uiState.searchTimer = setTimeout(() => {
+              const pos = uiState.searchQuery.length;
+              renderActiveSection();
+              const nextInput = document.getElementById('exp-search-input');
+              if (nextInput) {
+                nextInput.focus();
+                nextInput.setSelectionRange(pos, pos);
+              }
+            }, 140);
+          });
+        }
+
+        container.querySelector('#exp-search-clear')?.addEventListener('click', () => {
+          uiState.searchQuery = '';
+          renderActiveSection();
+        });
+
+        container.querySelector('#reset-filters-btn')?.addEventListener('click', () => {
+          uiState.searchQuery = '';
+          uiState.selectedCategoryId = 'all';
+          renderActiveSection();
+        });
+
+        // Category Filter Pills
+        container.querySelectorAll('[data-cat-filter]').forEach(pill => {
+          pill.addEventListener('click', () => {
+            uiState.selectedCategoryId = pill.getAttribute('data-cat-filter');
+            uiState.animate = true;
+            renderActiveSection();
+          });
+        });
+
+        // Card Actions
+        container.querySelectorAll('[data-action]').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const action = btn.getAttribute('data-action');
+            const id = btn.getAttribute('data-id');
+            const exp = store.state.experiences.find(item => item.id === id);
+            if (!exp) return;
+
+            if (action === 'complete') {
+              if (uiState.busy.has(id)) return;
+              uiState.busy.add(id);
+              const card = container.querySelector(`.exp-card[data-exp-id="${CSS.escape(id)}"]`);
+              if (card) card.classList.add('completing');
+              const r = btn.getBoundingClientRect();
+              celebrate(r.left + r.width / 2, r.top + r.height / 2);
+              setTimeout(() => {
+                uiState.busy.delete(id);
+                store.updateExperience(id, { status: 'completed' });
+                const all = store.state.experiences;
+                const total = all.filter(e => e.status === 'completed').length;
+                const sameCat = exp.categoryId ? all.filter(e => e.categoryId === exp.categoryId && e.status !== 'dropped') : [];
+                const catDone = sameCat.length > 1 && sameCat.every(e => e.status === 'completed');
+                const msg = MSGS[Math.floor(Math.random() * MSGS.length)];
+                if (total === 1 || total % 5 === 0 || catDone) {
+                  const cat = store.state.categories.find(c => c.id === exp.categoryId);
+                  showFinale(total === 1 ? 'Your first dream, lived.' : catDone ? `All ${cat ? cat.name : ''} dreams done!` : `${total} dreams lived!`, msg);
+                }
+                showToast(msg, () => store.updateExperience(id, { status: 'want' }));
+              }, 650);
+            } else if (action === 'complete-direct') {
+              uiState.openMenuId = null;
+              store.updateExperience(id, { status: 'completed' });
+              showToast(`Marked "${exp.title}" as completed`);
+            } else if (action === 'restore') {
+              store.updateExperience(id, { status: 'want' });
+              showToast(`Restored "${exp.title}" to Want to Do`);
+            } else if (action === 'drop') {
+              uiState.openMenuId = null;
+              store.updateExperience(id, { status: 'dropped' });
+              showToast(`Moved "${exp.title}" to Dropped`, () => {
+                store.updateExperience(id, { status: 'want' });
+              });
+            } else if (action === 'edit') {
+              uiState.openMenuId = null;
+              renderActiveSection();
+              openExperienceModal(exp);
+            } else if (action === 'toggle-menu') {
+              uiState.openMenuId = uiState.openMenuId === id ? null : id;
+              renderActiveSection();
+            } else if (action === 'delete') {
+              uiState.openMenuId = null;
+              openConfirmModal({
+                title: 'Delete Experience',
+                message: `Are you sure you want to permanently delete "${exp.title}"? This cannot be undone.`,
+                confirmText: 'Delete',
+                onConfirm: () => {
+                  store.deleteExperience(id);
+                  showToast('Experience deleted');
+                }
+              });
+            }
+          });
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         CATEGORIES SECTION
+         ---------------------------------------------------------------------- */
+      function renderCategoriesView(container) {
+        const uncategorisedCount = store.state.experiences.filter(e => !e.categoryId).length;
+
+        container.innerHTML = `
+          <header class="section-header">
+            <div>
+              <p class="greeting-eyebrow">Organise</p>
+              <h1 class="section-title">Categories</h1>
+              <p class="section-subtitle">Group your experiences by theme, or click any category to explore its items.</p>
+            </div>
+          </header>
+
+          <form id="create-category-form" class="category-create-bar" novalidate>
+            <input
+              type="text"
+              id="new-category-input"
+              class="input"
+              placeholder="Create a new category (e.g., Literature, Outdoors, Music)..."
+              maxlength="32"
+              aria-label="New category name"
+            />
+            <button type="submit" class="btn btn-primary">Create Category</button>
+          </form>
+
+          <div class="categories-grid">
+            ${store.state.categories.map(cat => {
+              const totalCount = store.state.experiences.filter(e => e.categoryId === cat.id).length;
+              const wantCount = store.state.experiences.filter(e => e.categoryId === cat.id && e.status === 'want').length;
+              const badgeClass = cat.tone === 'frost' ? 'badge-frost' : cat.tone === 'sunrise' ? 'badge-sunrise' : 'badge-silver';
+
+              return `
+                <div class="category-card">
+                  <div class="category-card-main" data-open-cat="${escapeHTML(cat.id)}" role="button" tabindex="0">
+                    <div class="category-card-name">
+                      <span class="category-badge ${badgeClass}" ${cat.color ? `style="--cat-color:${cat.color};background:color-mix(in srgb, ${cat.color} 13%, var(--bg-surface));color:${cat.color};border-color:color-mix(in srgb, ${cat.color} 35%, transparent)"` : ''}>${escapeHTML(cat.name)}</span>
+                    </div>
+                    <div class="category-card-count">
+                      ${totalCount} ${totalCount === 1 ? 'experience' : 'experiences'}${wantCount > 0 ? ` · ${wantCount} to do` : ''}
+                    </div>
+                  </div>
+                  <div class="category-card-actions">
+                    <button type="button" class="btn-icon" data-rename-cat="${escapeHTML(cat.id)}" title="Rename category" aria-label="Rename ${escapeHTML(cat.name)}">
+                      <svg class="nav-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
+                    <button type="button" class="btn-icon" data-delete-cat="${escapeHTML(cat.id)}" title="Delete category" aria-label="Delete ${escapeHTML(cat.name)}">
+                      <svg class="nav-icon" style="width:16px;height:16px;" viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                    </button>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+
+            ${uncategorisedCount > 0 ? `
+              <div class="category-card">
+                <div class="category-card-main" data-open-cat="uncategorised" role="button" tabindex="0">
+                  <div class="category-card-name">
+                    <span class="category-badge badge-silver">Uncategorised</span>
+                  </div>
+                  <div class="category-card-count">
+                    ${uncategorisedCount} ${uncategorisedCount === 1 ? 'experience' : 'experiences'}
+                  </div>
+                </div>
+              </div>
+            ` : ''}
+          </div>
+        `;
+
+        // Create Category Submit
+        container.querySelector('#create-category-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = container.querySelector('#new-category-input');
+          const res = store.addCategory(input.value);
+          if (!res.ok) {
+            showToast(res.error);
+            input.focus();
+            return;
+          }
+          showToast(`Created "${res.category.name}"`);
+        });
+
+        // Filter Want to Do by clicking category
+        container.querySelectorAll('[data-open-cat]').forEach(el => {
+          const openCat = () => {
+            uiState.selectedCategoryId = el.getAttribute('data-open-cat');
+            uiState.searchQuery = '';
+            navigateTo('want', true);
+          };
+          el.addEventListener('click', openCat);
+          el.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              openCat();
+            }
+          });
+        });
+
+        // Rename Category
+        container.querySelectorAll('[data-rename-cat]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const catId = btn.getAttribute('data-rename-cat');
+            const cat = store.state.categories.find(c => c.id === catId);
+            if (cat) openRenameCategoryModal(cat);
+          });
+        });
+
+        // Delete Category
+        container.querySelectorAll('[data-delete-cat]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const catId = btn.getAttribute('data-delete-cat');
+            const cat = store.state.categories.find(c => c.id === catId);
+            if (!cat) return;
+            openConfirmModal({
+              title: `Delete "${cat.name}"?`,
+              message: `Experiences currently in "${cat.name}" will not be deleted—they will simply become Uncategorised.`,
+              confirmText: 'Delete Category',
+              onConfirm: () => {
+                store.deleteCategory(catId);
+                showToast(`Deleted category "${cat.name}"`);
+              }
+            });
+          });
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         SETTINGS SECTION
+         ---------------------------------------------------------------------- */
+      function renderSettingsView(container) {
+        const userName = store.state.profile.name;
+
+        container.innerHTML = `
+          <header class="section-header">
+            <div>
+              <p class="greeting-eyebrow">Preferences</p>
+              <h1 class="section-title">Settings</h1>
+              <p class="section-subtitle">Manage your profile, appearance, and offline backup.</p>
+            </div>
+          </header>
+
+          <div class="settings-stack">
+            <!-- LIVIT Cloud Account -->
+            <section class="settings-card" id="livit-cloud-card">
+              <div class="settings-card-header">
+                <h2 class="settings-card-title">Account & Cloud Sync</h2>
+                <p class="settings-card-desc">Sign in to keep your private life list synchronised across your PC, tablet and phone.</p>
+              </div>
+              <div id="livit-cloud-account" style="font-size:.9rem;color:var(--ink-secondary);margin-bottom:10px;">Not signed in · This device only</div>
+              <p id="livit-cloud-status" data-state="local" style="font-size:.82rem;margin:0 0 14px;color:var(--ink-secondary);">Local mode · Sign in to sync across devices</p>
+              <div id="livit-auth-controls">
+                <button type="button" id="livit-google-signin" class="btn btn-primary" style="margin-bottom:12px;width:100%;">Continue with Google</button>
+                <div style="display:flex;align-items:center;gap:10px;margin:4px 0 12px;color:var(--ink-secondary);font-size:.8rem;"><span style="height:1px;background:var(--line);flex:1;"></span>OR EMAIL<span style="height:1px;background:var(--line);flex:1;"></span></div>
+                <form id="livit-email-signin-form" style="display:grid;gap:9px;max-width:440px;">
+                  <input class="input" id="livit-auth-email" type="email" autocomplete="email" placeholder="Email address" required />
+                  <input class="input" id="livit-auth-password" type="password" autocomplete="current-password" minlength="6" placeholder="Password (minimum 6 characters)" required />
+                  <div style="display:flex;gap:9px;flex-wrap:wrap;">
+                    <button type="submit" class="btn btn-primary">Sign in</button>
+                    <button type="button" id="livit-create-account" class="btn btn-secondary">Create account</button>
+                  </div>
+                </form>
+              </div>
+              <div id="livit-signedin-controls" class="hidden">
+                <p style="font-size:.85rem;color:var(--ink-secondary);margin:0 0 10px;">Your LIVIT data is linked to this account. Use the same account on every device.</p>
+                <button type="button" id="livit-signout" class="btn btn-secondary">Sign out</button>
+              </div>
+            </section>
+
+            <!-- Profile Name -->
+            <section class="settings-card">
+              <div class="settings-card-header">
+                <h2 class="settings-card-title">Profile Name</h2>
+                <p class="settings-card-desc">Used for your personal greeting across LIVIT.</p>
+              </div>
+              <form id="settings-name-form" style="display:flex; gap:10px; max-width:440px;">
+                <input
+                  type="text"
+                  id="settings-name-input"
+                  class="input"
+                  value="${escapeHTML(userName)}"
+                  maxlength="40"
+                  required
+                  aria-label="Profile name"
+                />
+                <button type="submit" class="btn btn-primary">Save</button>
+              </form>
+            </section>
+
+            <!-- Appearance Theme -->
+            <section class="settings-card">
+              <div class="settings-card-header">
+                <h2 class="settings-card-title">Appearance</h2>
+                <p class="settings-card-desc">Choose a DAYONE-inspired color palette and set Light, Dark or automatic appearance. Your choice is saved on this device.</p>
+              </div>
+              <div class="appearance-mode" role="group" aria-label="Appearance mode">
+                ${['light','dark','auto'].map(m => `<button type="button" class="btn btn-secondary ${currentMode===m?'active':''}" data-set-mode="${m}">${m==='auto'?'System':m[0].toUpperCase()+m.slice(1)}</button>`).join('')}
+              </div>
+              <div class="theme-grid" role="group" aria-label="Color theme">
+                ${THEMES.map(t => `<button type="button" class="theme-swatch ${currentTheme === t.id ? 'active' : ''}" data-set-theme="${t.id}"><span class="sw" style="background:${t.sw[0]}"><i style="background:${t.sw[1]}"></i><i style="background:${t.sw[2]}"></i></span>${t.name}</button>`).join('')}
+              </div>
+            </section>
+
+            <!-- Celebrations -->
+            <section class="settings-card">
+              <div class="settings-row">
+                <div>
+                  <h2 class="settings-card-title">Celebrations</h2>
+                  <p class="settings-card-desc">Confetti, a soft chime and phone vibration when you complete an experience.</p>
+                </div>
+                <label style="display:flex;align-items:center;gap:8px;font-size:.875rem;"><input type="checkbox" id="fx-toggle" ${FX.on ? 'checked' : ''} /> Enabled</label>
+              </div>
+            </section>
+
+            <!-- Data Portability (JSON Export & Import) -->
+            <section class="settings-card">
+              <div class="settings-card-header">
+                <h2 class="settings-card-title">Data & Backup</h2>
+                <p class="settings-card-desc">Your experiences are saved on this device and, when signed in, synchronised privately to your LIVIT cloud account. Export a JSON backup anytime.</p>
+              </div>
+              <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                <button type="button" id="export-json-btn" class="btn btn-secondary">Export JSON</button>
+                <button type="button" id="import-json-btn" class="btn btn-secondary">Import JSON</button>
+              </div>
+            </section>
+
+            <!-- Danger Zone -->
+            <section class="settings-card">
+              <div class="settings-row">
+                <div>
+                  <h2 class="settings-card-title">Reset Local Data</h2>
+                  <p class="settings-card-desc">Permanently erase all experiences, custom categories, and your profile from this browser.</p>
+                </div>
+                <button type="button" id="clear-data-btn" class="btn btn-danger">Clear Local Data</button>
+              </div>
+            </section>
+
+            <!-- LIVIT Brand Identity Card -->
+            <section class="settings-card">
+              <div class="brand-about-card">
+                <div class="brand-about-left">
+                  <svg style="width:44px;height:44px;border-radius:11px;box-shadow:var(--shadow-xs);" class="icon-for-light" aria-hidden="true"><use href="#livit-icon-light" /></svg>
+                  <svg style="width:44px;height:44px;border-radius:11px;box-shadow:var(--shadow-xs);" class="icon-for-dark" aria-hidden="true"><use href="#livit-icon-dark" /></svg>
+                  <div>
+                    <svg style="height:17px;width:auto;display:block;margin-bottom:4px;" role="img" aria-label="LIVIT"><use href="#livit-wordmark" /></svg>
+                    <p style="font-size:0.8125rem; color:var(--ink-secondary);">Live the things you dream of.</p>
+                  </div>
+                </div>
+                <span class="category-badge badge-silver">Version 1.2 · Cloud Sync</span>
+              </div>
+            </section>
+          </div>
+        `;
+
+        // Account controls
+        const authControls = container.querySelector('#livit-auth-controls');
+        const signedInControls = container.querySelector('#livit-signedin-controls');
+        authControls.classList.toggle('hidden', Boolean(cloudUser));
+        signedInControls.classList.toggle('hidden', !cloudUser);
+        updateCloudAccountHeader();
+        container.querySelector('#livit-google-signin').addEventListener('click', handleGoogleSignIn);
+        container.querySelector('#livit-email-signin-form').addEventListener('submit', e => {
+          e.preventDefault();
+          handleEmailSignIn(false);
+        });
+        container.querySelector('#livit-create-account').addEventListener('click', () => handleEmailSignIn(true));
+        container.querySelector('#livit-signout').addEventListener('click', async () => {
+          try { await signOut(auth); showToast('Signed out. Your local copy remains on this device.'); }
+          catch (err) { console.error(err); showToast('Could not sign out. Please try again.'); }
+        });
+
+        // Profile Name Update
+        container.querySelector('#settings-name-form').addEventListener('submit', (e) => {
+          e.preventDefault();
+          const input = container.querySelector('#settings-name-input');
+          const newName = input.value.trim();
+          if (!newName) {
+            showToast('Name cannot be empty.');
+            input.focus();
+            return;
+          }
+          store.setProfileName(newName);
+          showToast('Profile name updated');
+        });
+
+        // Celebrations toggle
+        container.querySelector('#fx-toggle').addEventListener('change', (e) => {
+          FX.on = e.target.checked;
+          try { localStorage.setItem('livit_fx', FX.on ? 'on' : 'off'); } catch (x) {}
+          if (FX.on) fxChime(false);
+        });
+
+        // Appearance mode selector (Light / Dark / System)
+        container.querySelectorAll('[data-set-mode]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            currentMode = btn.getAttribute('data-set-mode');
+            try { localStorage.setItem('livit_mode', currentMode); } catch(e) {}
+            applyTheme(currentTheme);
+            renderActiveSection();
+          });
+        });
+
+        // Theme Switcher
+        container.querySelectorAll('[data-set-theme]').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const chosen = btn.getAttribute('data-set-theme');
+            if (chosen !== currentTheme) {
+              currentTheme = chosen;
+              applyTheme(currentTheme);
+              renderActiveSection();
+            }
+          });
+        });
+
+        // Export JSON
+        container.querySelector('#export-json-btn').addEventListener('click', () => {
+          const jsonStr = store.exportJSON();
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          const stamp = new Date().toISOString().slice(0, 10);
+          a.href = url;
+          a.download = `livit-backup-${stamp}.json`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+          showToast('Exported LIVIT backup JSON');
+        });
+
+        // Import JSON
+        container.querySelector('#import-json-btn').addEventListener('click', () => {
+          const fileInput = document.getElementById('json-import-input');
+          fileInput.value = '';
+          fileInput.click();
+        });
+
+        // Clear All Local Data with Strong Confirmation
+        container.querySelector('#clear-data-btn').addEventListener('click', () => {
+          openConfirmModal({
+            title: 'Clear All Local Data?',
+            message: 'This will permanently delete all your experiences, custom categories, and profile settings stored in this browser. Export a JSON backup first if you wish to keep a copy.',
+            confirmText: 'Erase Everything',
+            requireTypedWord: 'DELETE',
+            onConfirm: () => {
+              store.clearAllData();
+              showToast('All local data cleared');
+            }
+          });
+        });
+      }
+
+      /* Handle JSON File Upload */
+      document.getElementById('json-import-input').addEventListener('change', (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = () => {
+          try {
+            store.importJSON(String(reader.result));
+            showToast('Backup imported successfully');
+            renderApp();
+          } catch (err) {
+            console.error('Import error:', err);
+            showToast('Invalid LIVIT JSON file. No existing data was overwritten.');
+          }
+        };
+        reader.onerror = () => {
+          showToast('Could not read the selected file.');
+        };
+        reader.readAsText(file);
+      });
+
+      /* ----------------------------------------------------------------------
+         ADD / EDIT EXPERIENCE MODAL CONTROLLER
+         ---------------------------------------------------------------------- */
+      function openExperienceModal(experience = null) {
+        const modal = document.getElementById('experience-modal');
+        const titleEl = document.getElementById('exp-modal-title');
+        const idInput = document.getElementById('exp-id');
+        const nameInput = document.getElementById('exp-title-input');
+        const descInput = document.getElementById('exp-desc-input');
+        const catSelect = document.getElementById('exp-category-select');
+        const locInput = document.getElementById('exp-location-input');
+        const notesInput = document.getElementById('exp-notes-input');
+        const deleteBtn = document.getElementById('exp-delete-btn');
+        const errorEl = document.getElementById('exp-title-error');
+
+        errorEl.classList.add('hidden');
+
+        // Populate Category Dropdown
+        catSelect.innerHTML = `
+          <option value="">Uncategorised</option>
+          ${store.state.categories.map(c => `<option value="${escapeHTML(c.id)}">${escapeHTML(c.name)}</option>`).join('')}
+        `;
+
+        if (experience) {
+          titleEl.textContent = 'Edit Experience';
+          idInput.value = experience.id;
+          nameInput.value = experience.title;
+          descInput.value = experience.description || '';
+          catSelect.value = experience.categoryId || '';
+          locInput.value = experience.location || '';
+          notesInput.value = experience.notes || '';
+          deleteBtn.classList.remove('hidden');
+        } else {
+          titleEl.textContent = 'Add Experience';
+          idInput.value = '';
+          nameInput.value = '';
+          descInput.value = '';
+          catSelect.value = (uiState.selectedCategoryId !== 'all' && uiState.selectedCategoryId !== 'uncategorised')
+            ? uiState.selectedCategoryId
+            : '';
+          locInput.value = '';
+          notesInput.value = '';
+          deleteBtn.classList.add('hidden');
+        }
+
+        modal.classList.remove('hidden');
+        setTimeout(() => nameInput.focus(), 40);
+      }
+
+      function closeExperienceModal() {
+        document.getElementById('experience-modal').classList.add('hidden');
+      }
+
+      document.getElementById('exp-modal-close').addEventListener('click', closeExperienceModal);
+      document.getElementById('exp-cancel-btn').addEventListener('click', closeExperienceModal);
+      document.getElementById('experience-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'experience-modal') closeExperienceModal();
+      });
+
+      document.getElementById('experience-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('exp-id').value;
+        const title = document.getElementById('exp-title-input').value.trim();
+        const description = document.getElementById('exp-desc-input').value;
+        const categoryId = document.getElementById('exp-category-select').value || null;
+        const location = document.getElementById('exp-location-input').value;
+        const notes = document.getElementById('exp-notes-input').value;
+        const errorEl = document.getElementById('exp-title-error');
+
+        if (!title) {
+          errorEl.classList.remove('hidden');
+          document.getElementById('exp-title-input').focus();
+          return;
+        }
+
+        errorEl.classList.add('hidden');
+
+        if (id) {
+          store.updateExperience(id, { title, description, categoryId, location, notes });
+          showToast('Experience updated');
+        } else {
+          store.addExperience({ title, description, categoryId, location, notes });
+          showToast('Added to Want to Do');
+        }
+
+        closeExperienceModal();
+      });
+
+      document.getElementById('exp-delete-btn').addEventListener('click', () => {
+        const id = document.getElementById('exp-id').value;
+        const exp = store.state.experiences.find(item => item.id === id);
+        if (!exp) return;
+
+        openConfirmModal({
+          title: 'Delete Experience',
+          message: `Permanently delete "${exp.title}"? This action cannot be undone.`,
+          confirmText: 'Delete',
+          onConfirm: () => {
+            store.deleteExperience(id);
+            closeExperienceModal();
+            showToast('Experience deleted');
+          }
+        });
+      });
+
+      /* ----------------------------------------------------------------------
+         RENAME CATEGORY MODAL CONTROLLER
+         ---------------------------------------------------------------------- */
+      function openRenameCategoryModal(category) {
+        const modal = document.getElementById('rename-cat-modal');
+        const idInput = document.getElementById('rename-cat-id');
+        const nameInput = document.getElementById('rename-cat-input');
+        const colorInput = document.getElementById('rename-cat-color');
+        const errorEl = document.getElementById('rename-cat-error');
+
+        idInput.value = category.id;
+        nameInput.value = category.name;
+        colorInput.value = /^#[0-9a-fA-F]{6}$/.test(category.color || '') ? category.color : '#0EA5E9';
+        errorEl.classList.add('hidden');
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          nameInput.focus();
+          nameInput.select();
+        }, 40);
+      }
+
+      function closeRenameCategoryModal() {
+        document.getElementById('rename-cat-modal').classList.add('hidden');
+      }
+
+      document.getElementById('rename-cat-close').addEventListener('click', closeRenameCategoryModal);
+      document.getElementById('rename-cat-cancel').addEventListener('click', closeRenameCategoryModal);
+      document.getElementById('rename-cat-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'rename-cat-modal') closeRenameCategoryModal();
+      });
+
+      document.getElementById('rename-cat-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const id = document.getElementById('rename-cat-id').value;
+        const newName = document.getElementById('rename-cat-input').value;
+        const newColor = document.getElementById('rename-cat-color').value;
+        const errorEl = document.getElementById('rename-cat-error');
+
+        const res = store.renameCategory(id, newName);
+        if (res.ok) store.setCategoryColor(id, newColor);
+        if (!res.ok) {
+          errorEl.textContent = res.error;
+          errorEl.classList.remove('hidden');
+          return;
+        }
+
+        closeRenameCategoryModal();
+        showToast('Category name and colour updated');
+      });
+
+      /* ----------------------------------------------------------------------
+         CONFIRMATION MODAL CONTROLLER
+         ---------------------------------------------------------------------- */
+      let activeConfirmCallback = null;
+      let activeRequiredWord = null;
+
+      function openConfirmModal({ title, message, confirmText = 'Confirm', requireTypedWord = null, onConfirm }) {
+        const modal = document.getElementById('confirm-modal');
+        const titleEl = document.getElementById('confirm-title');
+        const msgEl = document.getElementById('confirm-message');
+        const acceptBtn = document.getElementById('confirm-accept-btn');
+        const typeWrap = document.getElementById('confirm-type-wrap');
+        const typeInput = document.getElementById('confirm-type-input');
+
+        titleEl.textContent = title;
+        msgEl.textContent = message;
+        acceptBtn.textContent = confirmText;
+        activeConfirmCallback = onConfirm;
+        activeRequiredWord = requireTypedWord;
+
+        if (requireTypedWord) {
+          typeWrap.classList.remove('hidden');
+          typeInput.value = '';
+          acceptBtn.disabled = true;
+          acceptBtn.style.opacity = '0.5';
+        } else {
+          typeWrap.classList.add('hidden');
+          typeInput.value = '';
+          acceptBtn.disabled = false;
+          acceptBtn.style.opacity = '1';
+        }
+
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+          if (requireTypedWord) typeInput.focus();
+          else acceptBtn.focus();
+        }, 40);
+      }
+
+      function closeConfirmModal() {
+        document.getElementById('confirm-modal').classList.add('hidden');
+        activeConfirmCallback = null;
+        activeRequiredWord = null;
+      }
+
+      document.getElementById('confirm-type-input').addEventListener('input', (e) => {
+        if (!activeRequiredWord) return;
+        const acceptBtn = document.getElementById('confirm-accept-btn');
+        const matches = e.target.value.trim().toUpperCase() === activeRequiredWord;
+        acceptBtn.disabled = !matches;
+        acceptBtn.style.opacity = matches ? '1' : '0.5';
+      });
+
+      document.getElementById('confirm-accept-btn').addEventListener('click', () => {
+        if (activeRequiredWord) {
+          const val = document.getElementById('confirm-type-input').value.trim().toUpperCase();
+          if (val !== activeRequiredWord) return;
+        }
+        const cb = activeConfirmCallback;
+        closeConfirmModal();
+        if (typeof cb === 'function') cb();
+      });
+
+      document.getElementById('confirm-close-btn').addEventListener('click', closeConfirmModal);
+      document.getElementById('confirm-cancel-btn').addEventListener('click', closeConfirmModal);
+      document.getElementById('confirm-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'confirm-modal') closeConfirmModal();
+      });
+
+      /* ----------------------------------------------------------------------
+         INITIALIZE APPLICATION
+         ---------------------------------------------------------------------- */
+      store.subscribe(() => {
+        renderApp();
+        if (!applyingCloudState && cloudUser && cloudReady) writeCloudState();
+      });
+      window.addEventListener('online', () => {
+        if (cloudUser && cloudReady) writeCloudState();
+      });
+      renderApp();
+    })();
+  </script>
+</body>
+</html>

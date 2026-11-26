@@ -1,0 +1,17 @@
+{
+  "name": "livit",
+  "version": "1.0.0",
+  "private": true,
+  "description": "LIVIT personal life list",
+  "scripts": {
+    "copy:web": "node scripts/copy-web.js",
+    "android:sync": "npm run copy:web && cap sync android"
+  },
+  "dependencies": {
+    "@capacitor/core": "^8.0.0"
+  },
+  "devDependencies": {
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/android": "^8.0.0"
+  }
+}
