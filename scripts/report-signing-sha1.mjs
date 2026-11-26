@@ -1,25 +1,74 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawnSync } from 'node:child_process';
+import { execFileSync } from 'node:child_process';
 
-const appDir = path.join(process.cwd(), 'android', 'app');
-const stable = path.join(appDir, 'livit-debug.keystore');
-const defaultKey = path.join(process.env.HOME || '', '.android', 'debug.keystore');
-const key = fs.existsSync(stable) ? stable : defaultKey;
-if (!fs.existsSync(key)) {
-  console.error('No debug keystore was found; Gradle may not have completed the APK signing step.');
+const apkPath = path.resolve(
+  'android/app/build/outputs/apk/debug/app-debug.apk'
+);
+
+if (!fs.existsSync(apkPath)) {
+  console.error(`APK not found: ${apkPath}`);
   process.exit(1);
 }
-const alias = stable === key ? process.env.LIVIT_DEBUG_KEY_ALIAS : 'androiddebugkey';
-const password = stable === key ? process.env.LIVIT_DEBUG_KEYSTORE_PASSWORD : 'android';
-const result = spawnSync('keytool', ['-list', '-v', '-keystore', key, '-storepass', password, '-alias', alias], { encoding: 'utf8' });
-if (result.status !== 0) {
-  console.error(result.stderr || result.stdout);
-  process.exit(result.status || 1);
+
+const androidHome =
+  process.env.ANDROID_HOME ||
+  process.env.ANDROID_SDK_ROOT;
+
+if (!androidHome) {
+  console.error('ANDROID_HOME and ANDROID_SDK_ROOT are not set.');
+  process.exit(1);
 }
-const sha1 = (result.stdout.match(/SHA1:\s*([A-F0-9:]+)/i) || [])[1];
-if (!sha1) throw new Error('Could not read SHA-1 from keytool output.');
-console.log(`LIVIT Android debug signing SHA-1: ${sha1}`);
-console.log('Register this exact SHA-1 in Firebase Console > Project settings > Your apps > Android app (com.livit.app), then download the refreshed google-services.json into the project root.');
-const summary = process.env.GITHUB_STEP_SUMMARY;
-if (summary) fs.appendFileSync(summary, `\n### LIVIT Android signing\nDebug certificate SHA-1: \`${sha1}\`\n\nRegister this SHA-1 in Firebase Console for \`com.livit.app\` and commit the refreshed \`google-services.json\`.\n`);
+
+const buildTools = path.join(androidHome, 'build-tools');
+
+if (!fs.existsSync(buildTools)) {
+  console.error(`Android build-tools directory not found: ${buildTools}`);
+  process.exit(1);
+}
+
+const versions = fs.readdirSync(buildTools)
+  .filter(name => fs.existsSync(path.join(buildTools, name, 'apksigner')))
+  .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
+
+if (versions.length === 0) {
+  console.error('Could not find apksigner in Android build-tools.');
+  process.exit(1);
+}
+
+const apksigner = path.join(
+  buildTools,
+  versions[0],
+  'apksigner'
+);
+
+try {
+  const output = execFileSync(
+    apksigner,
+    ['verify', '--print-certs', apkPath],
+    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
+  );
+
+  const match = output.match(
+    /Signer #1 certificate SHA-1 digest:\s*([a-fA-F0-9:]+)/i
+  );
+
+  if (!match) {
+    console.error('APK verified, but its SHA-1 certificate digest was not found.');
+    console.error(output);
+    process.exit(1);
+  }
+
+  console.log('');
+  console.log('LIVIT APK SIGNING CERTIFICATE');
+  console.log('--------------------------------');
+  console.log(`APK: ${apkPath}`);
+  console.log(`SHA-1: ${match[1].toUpperCase()}`);
+  console.log('--------------------------------');
+  console.log('Certificate successfully extracted from the APK.');
+
+} catch (error) {
+  console.error('Failed to verify APK signature.');
+  console.error(error.stderr?.toString() || error.message);
+  process.exit(1);
+}
