@@ -1,29 +1,85 @@
 name: Build LIVIT Android APK
+
 on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: ['index.html','assets/**','package.json','capacitor.config.json','.github/workflows/build-apk.yml']
+    paths:
+      - 'index.html'
+      - 'assets/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'capacitor.config.json'
+      - 'google-services.json'
+      - '.github/workflows/build-apk.yml'
+
 permissions:
   contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
-        with: {node-version: 22}
+        with:
+          node-version: 22
+
       - uses: actions/setup-java@v4
-        with: {distribution: temurin, java-version: '21'}
-      - run: npm install
-      - run: npm run copy:web
-      - run: npx cap add android
-      - run: npx cap sync android
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Install dependencies
+        run: npm install --no-audit --no-fund
+
+      - name: Build the web assets and native authentication bridge
+        run: npm run build:web
+
+      - name: Generate a fresh Capacitor Android project
+        run: npx cap add android
+
+      - name: Synchronize Capacitor plugins
+        run: npx cap sync android
+
+      - name: Configure Firebase Android and native Google Sign-In
+        env:
+          LIVIT_DEBUG_KEYSTORE_BASE64: ${{ secrets.LIVIT_DEBUG_KEYSTORE_BASE64 }}
+          LIVIT_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.LIVIT_DEBUG_KEYSTORE_PASSWORD }}
+          LIVIT_DEBUG_KEY_ALIAS: ${{ secrets.LIVIT_DEBUG_KEY_ALIAS }}
+          LIVIT_DEBUG_KEY_PASSWORD: ${{ secrets.LIVIT_DEBUG_KEY_PASSWORD }}
+        run: node scripts/configure-android.mjs
+
+      - name: Generate LIVIT Android launcher icons
+        run: npx capacitor-assets generate --android
+
+      - name: Verify generated Android project
+        run: npm run verify:android
+
       - name: Build debug APK
         working-directory: android
-        run: ./gradlew assembleDebug
+        env:
+          LIVIT_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.LIVIT_DEBUG_KEYSTORE_PASSWORD }}
+          LIVIT_DEBUG_KEY_ALIAS: ${{ secrets.LIVIT_DEBUG_KEY_ALIAS }}
+          LIVIT_DEBUG_KEY_PASSWORD: ${{ secrets.LIVIT_DEBUG_KEY_PASSWORD }}
+        run: ./gradlew --no-daemon assembleDebug
+
+      - name: Report the certificate SHA-1 used by this APK
+        env:
+          LIVIT_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.LIVIT_DEBUG_KEYSTORE_PASSWORD }}
+          LIVIT_DEBUG_KEY_ALIAS: ${{ secrets.LIVIT_DEBUG_KEY_ALIAS }}
+        run: node scripts/report-signing-sha1.mjs
+
+      - name: Verify APK artifact
+        run: |
+          test -s android/app/build/outputs/apk/debug/app-debug.apk
+          unzip -l android/app/build/outputs/apk/debug/app-debug.apk | grep -E 'res/mipmap-(mdpi|hdpi|xhdpi|xxhdpi|xxxhdpi)|res/mipmap-anydpi-v26/ic_launcher'
+
       - uses: actions/upload-artifact@v4
         with:
           name: LIVIT-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
+          retention-days: 14

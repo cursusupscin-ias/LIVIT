@@ -1764,7 +1764,8 @@
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
     import {
-      getAuth, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword,
+      getAuth, initializeAuth, indexedDBLocalPersistence, GoogleAuthProvider,
+      signInWithPopup, signInWithCredential, createUserWithEmailAndPassword,
       signInWithEmailAndPassword, signOut, onAuthStateChanged, updateProfile
     } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
     import {
@@ -2388,7 +2389,13 @@
         appId: "1:17584760103:web:d3afb6cc39f091497db502"
       };
       const firebaseApp = initializeApp(firebaseConfig);
-      const auth = getAuth(firebaseApp);
+      // Capacitor's Firebase Authentication bridge requires IndexedDB persistence
+      // when the Firebase JavaScript SDK is used alongside native sign-in.
+      // Browsers retain their existing getAuth() behaviour.
+      const isNativePlatform = Boolean(window.Capacitor?.isNativePlatform?.());
+      const auth = isNativePlatform
+        ? initializeAuth(firebaseApp, { persistence: indexedDBLocalPersistence })
+        : getAuth(firebaseApp);
       const db = getFirestore(firebaseApp);
       const googleProvider = new GoogleAuthProvider();
       googleProvider.setCustomParameters({ prompt: 'select_account' });
@@ -2520,16 +2527,83 @@
         }
       }
 
+      let googleSignInInProgress = false;
+      let nativeAuthModulePromise = null;
+
+      function getNativeAuthModule() {
+        if (!nativeAuthModulePromise) {
+          nativeAuthModulePromise = import('./native-auth.js');
+        }
+        return nativeAuthModulePromise;
+      }
+
+      function isGoogleSignInCancelled(error) {
+        const details = `${error?.code || ''} ${error?.message || ''}`.toLowerCase();
+        return details.includes('cancel') || details.includes('12501');
+      }
+
       async function handleGoogleSignIn() {
+        if (googleSignInInProgress) return;
+        googleSignInInProgress = true;
+        const button = document.getElementById('livit-google-signin');
+        if (button) button.disabled = true;
+
         try {
-          await signInWithPopup(auth, googleProvider);
+          if (isNativePlatform) {
+            // Android: use the native Credential Manager / Firebase flow.
+            // The returned Google ID token is exchanged into this app's one
+            // existing Firebase JavaScript Auth instance for Firestore sync.
+            const nativeAuth = await getNativeAuthModule();
+            const result = await nativeAuth.signInWithGoogle();
+            const idToken = result?.credential?.idToken;
+            if (!idToken) {
+              throw new Error('Google did not return an ID token. Check the Android OAuth configuration.');
+            }
+            const credential = GoogleAuthProvider.credential(idToken);
+            await signInWithCredential(auth, credential);
+          } else {
+            // Ordinary browsers retain the existing Firebase popup flow.
+            await signInWithPopup(auth, googleProvider);
+          }
         } catch (err) {
           console.error('Google sign-in failed:', err);
-          showToast(err.code === 'auth/unauthorized-domain'
-            ? 'This website domain is not yet authorised in Firebase.'
-            : (err.code === 'auth/popup-blocked'
-              ? 'Your browser blocked the sign-in popup. Allow popups and try again.'
-              : 'Google sign-in failed: ' + (err.message || err.code)));
+          if (isGoogleSignInCancelled(err)) {
+            showToast('Google sign-in was cancelled.');
+          } else if (err.code === 'auth/unauthorized-domain') {
+            showToast('This website domain is not yet authorised in Firebase.');
+          } else if (err.code === 'auth/popup-blocked') {
+            showToast('Your browser blocked the sign-in popup. Allow popups and try again.');
+          } else if (String(err?.message || '').includes('ID token')) {
+            showToast('Google sign-in could not complete. Check the Android OAuth configuration.');
+          } else {
+            showToast('Google sign-in failed. Check your connection and Android Google sign-in configuration, then try again.');
+          }
+        } finally {
+          googleSignInInProgress = false;
+          if (button) button.disabled = false;
+        }
+      }
+
+      async function handleSignOut() {
+        try {
+          if (isNativePlatform) {
+            const nativeAuth = await getNativeAuthModule();
+            // Clear both layers: the native Firebase session and the existing
+            // Firebase JavaScript session used by Firestore.
+            const results = await Promise.allSettled([
+              signOut(auth),
+              nativeAuth.signOut()
+            ]);
+            if (results.some(result => result.status === 'rejected')) {
+              throw new Error('One authentication layer did not sign out.');
+            }
+          } else {
+            await signOut(auth);
+          }
+          showToast('Signed out. Your local copy remains on this device.');
+        } catch (err) {
+          console.error('LIVIT sign-out failed:', err);
+          showToast('Could not fully sign out. Please try again.');
         }
       }
 
@@ -3393,10 +3467,7 @@
           handleEmailSignIn(false);
         });
         container.querySelector('#livit-create-account').addEventListener('click', () => handleEmailSignIn(true));
-        container.querySelector('#livit-signout').addEventListener('click', async () => {
-          try { await signOut(auth); showToast('Signed out. Your local copy remains on this device.'); }
-          catch (err) { console.error(err); showToast('Could not sign out. Please try again.'); }
-        });
+        container.querySelector('#livit-signout').addEventListener('click', handleSignOut);
 
         // Profile Name Update
         container.querySelector('#settings-name-form').addEventListener('submit', (e) => {

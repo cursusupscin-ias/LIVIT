@@ -1,4 +1,4 @@
-﻿node_modules/
+node_modules/
 www/
 android/.gradle/
 android/build/
@@ -6,5 +6,3 @@ android/app/build/
 *.jks
 *.keystore
 .env
-.env.*
-!.env.example
