@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "17584760103",
+    "project_id": "livit-lifebucket",
+    "storage_bucket": "livit-lifebucket.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:17584760103:android:527927cc638e88e87db502",
+        "android_client_info": {
+          "package_name": "com.livit.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "17584760103-mncpfbn8nno6nk6pp8kc2o1i47s6hiaf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.livit.app",
+            "certificate_hash": "e7e4d70d8e637caef9561e87ad4e4ad9b1c5bb13"
+          }
+        },
+        {
+          "client_id": "17584760103-d1at4tsoqr24mfe1h7en2t6lid9mag8e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5uXezhP6DWc6OQKpJlpA8Jb5Z7Vga3DY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "17584760103-d1at4tsoqr24mfe1h7en2t6lid9mag8e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

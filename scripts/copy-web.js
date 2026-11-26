@@ -1,0 +1,1 @@
+const fs=require('fs'),path=require('path');const out=path.join(__dirname,'..','www');fs.mkdirSync(out,{recursive:true});fs.copyFileSync(path.join(__dirname,'..','index.html'),path.join(out,'index.html'));console.log('LIVIT copied to www/');
