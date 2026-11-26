@@ -7,8 +7,7 @@ const apkPath = path.resolve(
 );
 
 if (!fs.existsSync(apkPath)) {
-  console.error(`APK not found: ${apkPath}`);
-  process.exit(1);
+  throw new Error(`APK not found: ${apkPath}`);
 }
 
 const androidHome =
@@ -16,24 +15,19 @@ const androidHome =
   process.env.ANDROID_SDK_ROOT;
 
 if (!androidHome) {
-  console.error('ANDROID_HOME and ANDROID_SDK_ROOT are not set.');
-  process.exit(1);
+  throw new Error('Android SDK path not found.');
 }
 
 const buildTools = path.join(androidHome, 'build-tools');
 
-if (!fs.existsSync(buildTools)) {
-  console.error(`Android build-tools directory not found: ${buildTools}`);
-  process.exit(1);
-}
-
 const versions = fs.readdirSync(buildTools)
-  .filter(name => fs.existsSync(path.join(buildTools, name, 'apksigner')))
+  .filter(version =>
+    fs.existsSync(path.join(buildTools, version, 'apksigner'))
+  )
   .sort((a, b) => b.localeCompare(a, undefined, { numeric: true }));
 
-if (versions.length === 0) {
-  console.error('Could not find apksigner in Android build-tools.');
-  process.exit(1);
+if (!versions.length) {
+  throw new Error('apksigner not found.');
 }
 
 const apksigner = path.join(
@@ -42,33 +36,30 @@ const apksigner = path.join(
   'apksigner'
 );
 
-try {
-  const output = execFileSync(
-    apksigner,
-    ['verify', '--print-certs', apkPath],
-    { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }
-  );
+const output = execFileSync(
+  apksigner,
+  ['verify', '--print-certs', apkPath],
+  { encoding: 'utf8' }
+);
 
-  const match = output.match(
-    /Signer #1 certificate SHA-1 digest:\s*([a-fA-F0-9:]+)/i
-  );
+const match = output.match(
+  /certificate SHA-1 digest:\s*([a-fA-F0-9:]+)/i
+);
 
-  if (!match) {
-    console.error('APK verified, but its SHA-1 certificate digest was not found.');
-    console.error(output);
-    process.exit(1);
-  }
-
-  console.log('');
-  console.log('LIVIT APK SIGNING CERTIFICATE');
-  console.log('--------------------------------');
-  console.log(`APK: ${apkPath}`);
-  console.log(`SHA-1: ${match[1].toUpperCase()}`);
-  console.log('--------------------------------');
-  console.log('Certificate successfully extracted from the APK.');
-
-} catch (error) {
-  console.error('Failed to verify APK signature.');
-  console.error(error.stderr?.toString() || error.message);
-  process.exit(1);
+if (!match) {
+  console.error(output);
+  throw new Error('Could not extract APK SHA-1 certificate.');
 }
+
+const sha1 = match[1]
+  .replace(/:/g, '')
+  .toUpperCase()
+  .match(/.{2}/g)
+  .join(':');
+
+console.log('\nLIVIT ANDROID APK SIGNING CERTIFICATE');
+console.log('======================================');
+console.log(`APK: ${apkPath}`);
+console.log(`SHA-1: ${sha1}`);
+console.log('======================================');
+console.log('APK signature verified successfully.');
