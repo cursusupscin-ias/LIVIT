@@ -20,6 +20,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
       - uses: actions/checkout@v4
 
@@ -58,12 +59,37 @@ jobs:
       - name: Verify generated Android project
         run: npm run verify:android
 
-      - name: Build debug APK
+      - name: Ensure debug keystore exists
         working-directory: android
         env:
           LIVIT_DEBUG_KEYSTORE_PASSWORD: ${{ secrets.LIVIT_DEBUG_KEYSTORE_PASSWORD }}
           LIVIT_DEBUG_KEY_ALIAS: ${{ secrets.LIVIT_DEBUG_KEY_ALIAS }}
           LIVIT_DEBUG_KEY_PASSWORD: ${{ secrets.LIVIT_DEBUG_KEY_PASSWORD }}
+        run: |
+          set -e
+
+          KEYSTORE="app/debug.keystore"
+          STORE_PASSWORD="${LIVIT_DEBUG_KEYSTORE_PASSWORD:-android}"
+          KEY_ALIAS="${LIVIT_DEBUG_KEY_ALIAS:-androiddebugkey}"
+          KEY_PASSWORD="${LIVIT_DEBUG_KEY_PASSWORD:-$STORE_PASSWORD}"
+
+          if [ ! -f "$KEYSTORE" ]; then
+            keytool -genkeypair \
+              -v \
+              -keystore "$KEYSTORE" \
+              -storepass "$STORE_PASSWORD" \
+              -alias "$KEY_ALIAS" \
+              -keypass "$KEY_PASSWORD" \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+          test -s "$KEYSTORE"
+
+      - name: Build debug APK
+        working-directory: android
         run: ./gradlew --no-daemon assembleDebug
 
       - name: Report the certificate SHA-1 used by this APK
@@ -74,8 +100,10 @@ jobs:
 
       - name: Verify APK artifact
         run: |
-          test -s android/app/build/outputs/apk/debug/app-debug.apk
-          unzip -l android/app/build/outputs/apk/debug/app-debug.apk | grep -E 'res/mipmap-(mdpi|hdpi|xhdpi|xxhdpi|xxxhdpi)|res/mipmap-anydpi-v26/ic_launcher'
+          set -e
+          APK="android/app/build/outputs/apk/debug/app-debug.apk"
+          test -s "$APK"
+          unzip -l "$APK" | grep -E 'res/mipmap-(mdpi|hdpi|xhdpi|xxhdpi|xxxhdpi)|res/mipmap-anydpi-v26/ic_launcher'
 
       - uses: actions/upload-artifact@v4
         with:
